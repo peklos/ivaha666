@@ -23,15 +23,6 @@ namespace LibrarySystem.Forms
 
         public LoginForm()
         {
-            try
-            {
-                DatabaseHelper.InitializeDatabase();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка инициализации базы данных: {ex.Message}");
-            }
-
             InitializeComponent();
         }
 
