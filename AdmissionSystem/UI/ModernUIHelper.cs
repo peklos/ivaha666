@@ -7,33 +7,36 @@ using LibrarySystem.Models;
 namespace LibrarySystem.UI
 {
     /// <summary>
-    /// Современный UI helper со светлой темой
+    /// Библиотечный UI helper - тёплые коричневые и бордовые тона
     /// </summary>
     public static class ModernUIHelper
     {
-        // Центральная палитра (светлая, но не белая)
-        public static readonly Color LightBackground = ColorFromHex("#F0F6FA");
-        public static readonly Color CardBackground = ColorFromHex("#F7FBFF");
-        public static readonly Color SidebarBackground = ColorFromHex("#E3F0F8");
+        // Основные фоновые цвета (тёплые бежевые тона)
+        public static readonly Color LightBackground = ColorFromHex("#FDF8F3");
+        public static readonly Color CardBackground = ColorFromHex("#FFFBF7");
+        public static readonly Color SidebarBackground = ColorFromHex("#F5EDE4");
 
-        // Акцентные цвета (глубокий синий + мягкая бирюза)
-        public static readonly Color PrimaryAccent = ColorFromHex("#1E6FB8");
-        public static readonly Color SecondaryAccent = ColorFromHex("#00A3C4");
-        public static readonly Color SuccessColor = ColorFromHex("#2E8B57");
-        public static readonly Color DangerColor = ColorFromHex("#D6453C");
-        public static readonly Color WarningColor = ColorFromHex("#E08E3E");
+        // Акцентные цвета (библиотечные - бордовый и коричневый)
+        public static readonly Color PrimaryAccent = ColorFromHex("#8B2635");      // Бордовый
+        public static readonly Color SecondaryAccent = ColorFromHex("#6B4423");    // Коричневый
+        public static readonly Color SuccessColor = ColorFromHex("#4A7C59");       // Тёмно-зелёный
+        public static readonly Color DangerColor = ColorFromHex("#C23B22");        // Красный
+        public static readonly Color WarningColor = ColorFromHex("#D4A017");       // Золотистый
 
         // Текст
-        public static readonly Color TextPrimary = ColorFromHex("#102A43");
-        public static readonly Color TextSecondary = ColorFromHex("#334E68");
-        public static readonly Color TextMuted = ColorFromHex("#6B7B86");
+        public static readonly Color TextPrimary = ColorFromHex("#2C1810");        // Тёмно-коричневый
+        public static readonly Color TextSecondary = ColorFromHex("#5D4E37");      // Коричневый
+        public static readonly Color TextMuted = ColorFromHex("#8B7355");          // Светло-коричневый
 
-        // Дополнительные оттенки и градиенты
-        public static readonly Color SidebarGradientStart = ColorFromHex("#E6F2FA");
-        public static readonly Color SidebarGradientEnd = ColorFromHex("#DFF0F8");
-        public static readonly Color CardHoverBackground = ColorFromHex("#EAF6FB");
-        public static readonly Color NeutralDark = ColorFromHex("#98A3AA");
-        public static readonly Color NeutralDarker = ColorFromHex("#7B8B93");
+        // Дополнительные оттенки
+        public static readonly Color SidebarGradientStart = ColorFromHex("#F5EDE4");
+        public static readonly Color SidebarGradientEnd = ColorFromHex("#E8DDD0");
+        public static readonly Color CardHoverBackground = ColorFromHex("#F0E6D9");
+        public static readonly Color NeutralDark = ColorFromHex("#A39585");
+        public static readonly Color NeutralDarker = ColorFromHex("#7D6E5D");
+
+        // Цвет для кнопок и акцентов
+        public static readonly Color AccentGold = ColorFromHex("#C4A35A");         // Золотой акцент
 
         /// <summary>
         /// Создает стильную кнопку с градиентом
@@ -47,23 +50,25 @@ namespace LibrarySystem.UI
                 Size = size,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                ForeColor = TextPrimary,
+                ForeColor = Color.White,
                 Cursor = Cursors.Hand,
                 BackColor = startColor
             };
 
-            // Make the button more pronounced (table-like): visible border, padding and margin
-            button.FlatAppearance.BorderSize = 1;
-            button.FlatAppearance.BorderColor = Color.FromArgb(90, NeutralDark);
+            button.FlatAppearance.BorderSize = 0;
             button.FlatAppearance.MouseOverBackColor = endColor;
             button.Padding = new Padding(12, 8, 12, 8);
             button.Margin = new Padding(6);
-            button.BackColor = startColor;
-            button.ForeColor = TextPrimary;
-            button.Cursor = Cursors.Hand;
 
-            // Slightly larger, bolder text for emphasis
-            button.Font = new Font("Segoe UI", 11.5f, FontStyle.Bold);
+            // Эффект при наведении
+            button.MouseEnter += (s, e) => {
+                button.BackColor = Color.FromArgb(
+                    Math.Min(255, startColor.R + 20),
+                    Math.Min(255, startColor.G + 20),
+                    Math.Min(255, startColor.B + 20)
+                );
+            };
+            button.MouseLeave += (s, e) => button.BackColor = startColor;
 
             return button;
         }
@@ -84,7 +89,6 @@ namespace LibrarySystem.UI
                 Tag = placeholder
             };
 
-            // Создаем панель-контейнер для границы
             var panel = new Panel
             {
                 Location = location,
@@ -129,11 +133,11 @@ namespace LibrarySystem.UI
                 Padding = new Padding(20)
             };
 
-            // Добавляем эффект тени через границу
             panel.Paint += (s, e) =>
             {
                 var p = (Panel)s;
-                using (var pen = new Pen(Color.FromArgb(30, 255, 255, 255), 1))
+                // Тёплая тень
+                using (var pen = new Pen(Color.FromArgb(40, SecondaryAccent), 1))
                 {
                     e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
                 }
@@ -155,7 +159,6 @@ namespace LibrarySystem.UI
                 Dock = DockStyle.Left
             };
 
-            // Градиент на боковой панели
             sidebar.Paint += (s, e) =>
             {
                 using (var brush = new LinearGradientBrush(
@@ -165,6 +168,12 @@ namespace LibrarySystem.UI
                     LinearGradientMode.Vertical))
                 {
                     e.Graphics.FillRectangle(brush, sidebar.ClientRectangle);
+                }
+
+                // Декоративная полоса справа
+                using (var pen = new Pen(PrimaryAccent, 3))
+                {
+                    e.Graphics.DrawLine(pen, sidebar.Width - 2, 0, sidebar.Width - 2, sidebar.Height);
                 }
             };
 
@@ -183,20 +192,20 @@ namespace LibrarySystem.UI
                 Size = new Size(220, 55),
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 12, FontStyle.Regular),
-                ForeColor = isActive ? TextPrimary : TextSecondary,
+                ForeColor = isActive ? Color.White : TextSecondary,
                 BackColor = isActive ? PrimaryAccent : Color.Transparent,
                 TextAlign = ContentAlignment.MiddleLeft,
                 Cursor = Cursors.Hand
             };
 
             button.FlatAppearance.BorderSize = 0;
-            button.FlatAppearance.MouseOverBackColor = CardBackground;
+            button.FlatAppearance.MouseOverBackColor = CardHoverBackground;
 
             return button;
         }
 
         /// <summary>
-        /// Стилизует DataGridView в темной теме
+        /// Стилизует DataGridView в библиотечной теме
         /// </summary>
         public static void StyleDataGridView(DataGridView dgv)
         {
@@ -215,23 +224,26 @@ namespace LibrarySystem.UI
             dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgv.RowTemplate.Height = 45;
 
-            // Стиль заголовков
-            dgv.ColumnHeadersDefaultCellStyle.BackColor = SidebarBackground;
-            dgv.ColumnHeadersDefaultCellStyle.ForeColor = TextPrimary;
+            // Стиль заголовков - бордовый акцент
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = PrimaryAccent;
+            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
-            dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = SidebarBackground;
+            dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = PrimaryAccent;
             dgv.ColumnHeadersDefaultCellStyle.Padding = new Padding(10);
             dgv.ColumnHeadersHeight = 50;
 
             // Стиль ячеек
             dgv.DefaultCellStyle.BackColor = CardBackground;
-            dgv.DefaultCellStyle.ForeColor = TextSecondary;
+            dgv.DefaultCellStyle.ForeColor = TextPrimary;
             dgv.DefaultCellStyle.Font = new Font("Segoe UI", 10);
-            dgv.DefaultCellStyle.SelectionBackColor = PrimaryAccent;
+            dgv.DefaultCellStyle.SelectionBackColor = CardHoverBackground;
             dgv.DefaultCellStyle.SelectionForeColor = TextPrimary;
             dgv.DefaultCellStyle.Padding = new Padding(10, 5, 10, 5);
 
-            dgv.GridColor = CardBackground;
+            // Альтернативные строки
+            dgv.AlternatingRowsDefaultCellStyle.BackColor = SidebarBackground;
+
+            dgv.GridColor = SidebarGradientEnd;
         }
 
         /// <summary>
@@ -262,12 +274,12 @@ namespace LibrarySystem.UI
         /// </summary>
         public static Panel CreateDivider(Point location, int width)
         {
-                return new Panel
-                {
-                    Location = location,
-                    Size = new Size(width, 1),
-                    BackColor = CardBackground
-                };
+            return new Panel
+            {
+                Location = location,
+                Size = new Size(width, 2),
+                BackColor = AccentGold
+            };
         }
 
         /// <summary>
@@ -277,11 +289,11 @@ namespace LibrarySystem.UI
         {
             var card = new Panel
             {
-                Size = new Size(350, 200),
+                Size = new Size(350, 220),
                 BackColor = CardBackground,
                 Padding = new Padding(15),
                 Cursor = Cursors.Hand,
-                Tag = app // Сохраняем объект заявления
+                Tag = app
             };
 
             // Определяем цвет статуса
@@ -300,51 +312,62 @@ namespace LibrarySystem.UI
                     break;
             }
 
-            // Стиль карточки
+            // Стиль карточки с закруглениями
             card.Paint += (s, e) =>
             {
                 var panel = (Panel)s;
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
                 // Заливка
                 using (var brush = new SolidBrush(panel.BackColor))
                 {
                     e.Graphics.FillRectangle(brush, panel.ClientRectangle);
                 }
-                
-                // Рамка с цветом статуса сверху
-                using (var pen = new Pen(statusColor, 3))
+
+                // Верхняя полоса статуса
+                using (var brush = new SolidBrush(statusColor))
+                {
+                    e.Graphics.FillRectangle(brush, 0, 0, panel.Width, 5);
+                }
+
+                // Рамка
+                using (var pen = new Pen(SidebarGradientEnd, 1))
                 {
                     e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
                 }
-                
-                // Тень
-                ControlPaint.DrawBorder(e.Graphics, panel.ClientRectangle,
-                    Color.FromArgb(40, 0, 0, 0), 0, ButtonBorderStyle.None,
-                    Color.FromArgb(40, 0, 0, 0), 5, ButtonBorderStyle.None,
-                    Color.FromArgb(40, 0, 0, 0), 0, ButtonBorderStyle.None,
-                    Color.FromArgb(40, 0, 0, 0), 5, ButtonBorderStyle.None);
+            };
+
+            // Иконка книги
+            Label lblIcon = new Label
+            {
+                Text = "📖",
+                Font = new Font("Segoe UI", 24),
+                Location = new Point(10, 15),
+                Size = new Size(50, 40),
+                BackColor = Color.Transparent
             };
 
             // Название книги (крупно)
             string fullName = app.FullRequest ?? "Не указано";
             Label lblName = new Label
             {
-                Text = fullName.Length > 25 ? fullName.Substring(0, 22) + "..." : fullName,
+                Text = fullName.Length > 30 ? fullName.Substring(0, 27) + "..." : fullName,
                 Font = new Font("Segoe UI", 12, FontStyle.Bold),
                 ForeColor = TextPrimary,
-                Location = new Point(10, 10),
-                Size = new Size(310, 30),
+                Location = new Point(65, 15),
+                Size = new Size(270, 30),
                 BackColor = Color.Transparent
             };
 
-            // Книга
+            // Категория
             string specialtyName = app.CategoryName ?? "Не указана";
             Label lblSpecialty = new Label
             {
-                Text = "Книга: " + (specialtyName.Length > 25 ? specialtyName.Substring(0, 22) + "..." : specialtyName),
+                Text = "Категория: " + (specialtyName.Length > 22 ? specialtyName.Substring(0, 19) + "..." : specialtyName),
                 Font = new Font("Segoe UI", 9),
                 ForeColor = TextSecondary,
-                Location = new Point(10, 45),
-                Size = new Size(310, 25),
+                Location = new Point(10, 60),
+                Size = new Size(320, 25),
                 BackColor = Color.Transparent
             };
 
@@ -354,8 +377,8 @@ namespace LibrarySystem.UI
                 Text = $"Автор: {app.Author}",
                 Font = new Font("Segoe UI", 9),
                 ForeColor = TextSecondary,
-                Location = new Point(10, 70),
-                Size = new Size(310, 25),
+                Location = new Point(10, 85),
+                Size = new Size(320, 25),
                 BackColor = Color.Transparent
             };
 
@@ -363,11 +386,11 @@ namespace LibrarySystem.UI
             string submittedAt = app.SubmittedAt ?? "Не указана";
             Label lblDate = new Label
             {
-                Text = $"Дата: {submittedAt}",
+                Text = $"Дата заявки: {submittedAt}",
                 Font = new Font("Segoe UI", 9),
                 ForeColor = TextMuted,
-                Location = new Point(10, 95),
-                Size = new Size(310, 25),
+                Location = new Point(10, 115),
+                Size = new Size(320, 25),
                 BackColor = Color.Transparent
             };
 
@@ -375,27 +398,28 @@ namespace LibrarySystem.UI
             string isbn = app.ISBN ?? "";
             Label lblPassport = new Label
             {
-                Text = $"ISBN: {isbn}",
+                Text = $"ISBN: {(string.IsNullOrEmpty(isbn) ? "—" : isbn)}",
                 Font = new Font("Segoe UI", 9),
                 ForeColor = TextMuted,
-                Location = new Point(10, 120),
-                Size = new Size(310, 25),
+                Location = new Point(10, 140),
+                Size = new Size(320, 25),
                 BackColor = Color.Transparent
             };
 
-            // Статус (в правом нижнем углу)
+            // Статус (в нижней части)
             Label lblStatus = new Label
             {
                 Text = status.ToUpper(),
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 ForeColor = statusColor,
-                Location = new Point(170, 155),
-                Size = new Size(150, 30),
-                TextAlign = ContentAlignment.MiddleRight,
+                Location = new Point(10, 175),
+                Size = new Size(320, 30),
+                TextAlign = ContentAlignment.MiddleLeft,
                 BackColor = Color.Transparent
             };
 
             // Добавляем все элементы на карточку
+            card.Controls.Add(lblIcon);
             card.Controls.Add(lblName);
             card.Controls.Add(lblSpecialty);
             card.Controls.Add(lblScore);

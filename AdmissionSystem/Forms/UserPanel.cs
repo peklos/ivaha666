@@ -34,7 +34,7 @@ namespace LibrarySystem.Forms
         private void InitializeComponent()
         {
             this.Size = new Size(1500, 900);
-            this.Text = "Панель пользователя";
+            this.Text = "Библиотека БППК - Личный кабинет студента";
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = ModernUIHelper.LightBackground;
             this.DoubleBuffered = true;
@@ -42,12 +42,12 @@ namespace LibrarySystem.Forms
             // Боковая панель навигации (компактная)
             sidebarPanel = ModernUIHelper.CreateSidebar(new Size(220, 900));
 
-            // Логотип и приветствие
+            // Логотип библиотеки
             Label lblLogo = new Label
             {
-                Text = "ПК",
-                Font = new Font("Segoe UI", 42, FontStyle.Bold),
-                ForeColor = ModernUIHelper.SecondaryAccent,
+                Text = "📖",
+                Font = new Font("Segoe UI", 48),
+                ForeColor = ModernUIHelper.PrimaryAccent,
                 Size = new Size(220, 72),
                 Location = new Point(0, 20),
                 TextAlign = ContentAlignment.MiddleCenter,
@@ -58,7 +58,7 @@ namespace LibrarySystem.Forms
             {
                 Text = "ЛИЧНЫЙ\nКАБИНЕТ",
                 Font = new Font("Segoe UI", 14, FontStyle.Bold),
-                ForeColor = ModernUIHelper.TextPrimary,
+                ForeColor = ModernUIHelper.PrimaryAccent,
                 Size = new Size(220, 66),
                 Location = new Point(0, 100),
                 TextAlign = ContentAlignment.MiddleCenter,
@@ -68,22 +68,36 @@ namespace LibrarySystem.Forms
             Label lblUserName = new Label
             {
                 Text = currentUser.FullName,
-                Font = new Font("Segoe UI", 11),
+                Font = new Font("Segoe UI", 10),
                 ForeColor = ModernUIHelper.TextSecondary,
-                Size = new Size(200, 36),
+                Size = new Size(200, 30),
                 Location = new Point(10, 170),
                 TextAlign = ContentAlignment.MiddleCenter,
                 BackColor = Color.Transparent
             };
 
-            Panel divider = ModernUIHelper.CreateDivider(new Point(10, 220), 200);
+            // Номер студенческого билета
+            Label lblStudentNumber = new Label
+            {
+                Text = $"№ {currentUser.StudentNumber ?? "—"}",
+                Font = new Font("Segoe UI", 9),
+                ForeColor = ModernUIHelper.TextMuted,
+                Size = new Size(200, 25),
+                Location = new Point(10, 195),
+                TextAlign = ContentAlignment.MiddleCenter,
+                BackColor = Color.Transparent
+            };
+
+            Panel divider = ModernUIHelper.CreateDivider(new Point(10, 230), 200);
 
             // Кнопки навигации
-            btnSpecialtiesNav = ModernUIHelper.CreateSidebarButton("Книги", 270, true);
+            btnSpecialtiesNav = ModernUIHelper.CreateSidebarButton("  Каталог книг", 260, true);
             btnSpecialtiesNav.Click += (s, e) => ShowSpecialtiesPanel();
 
-            btnApplicationsNav = ModernUIHelper.CreateSidebarButton("Мои заявления", 340);
+            btnApplicationsNav = ModernUIHelper.CreateSidebarButton("  Мои заявки", 330);
             btnApplicationsNav.Click += (s, e) => ShowApplicationsPanel();
+
+            sidebarPanel.Controls.Add(lblStudentNumber);
 
             // Кнопка выхода
             Button btnLogout = new Button

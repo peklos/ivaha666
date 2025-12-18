@@ -1,0 +1,79 @@
+name: Build Library BPPK
+
+on:
+  push:
+    branches: [ main, master, claude/* ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore AdmissionSystem/AdmissionSystem.csproj
+
+    - name: Build
+      run: dotnet build AdmissionSystem/AdmissionSystem.csproj --configuration Release --no-restore
+
+    - name: Publish single-file exe
+      run: |
+        dotnet publish AdmissionSystem/AdmissionSystem.csproj `
+          --configuration Release `
+          --runtime win-x64 `
+          --self-contained true `
+          -p:PublishSingleFile=true `
+          -p:IncludeNativeLibrariesForSelfExtract=true `
+          -p:EnableCompressionInSingleFile=true `
+          --output ./publish
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: LibraryBPPK-Windows-x64
+        path: ./publish/LibraryBPPK.exe
+        retention-days: 30
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: LibraryBPPK-Windows-x64
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ github.run_number }}
+        name: Release v${{ github.run_number }}
+        body: |
+          ## Библиотека ГБПОУ БППК
+
+          Автоматическая сборка приложения.
+
+          ### Тестовые данные для входа:
+          - **Администратор**: admin / admin123
+          - **Библиотекарь**: librarian / lib123
+          - **Студент**: student1 / pass123
+
+          ### Скачивание:
+          Скачайте файл `LibraryBPPK.exe` ниже.
+        files: LibraryBPPK.exe
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

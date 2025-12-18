@@ -37,7 +37,7 @@ namespace LibrarySystem.Forms
         private void InitializeComponent()
         {
             this.Size = new Size(1500, 900);
-            this.Text = "Панель администратора";
+            this.Text = "Библиотека БППК - Панель библиотекаря";
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = ModernUIHelper.LightBackground;
             this.DoubleBuffered = true;
@@ -45,11 +45,11 @@ namespace LibrarySystem.Forms
             // Боковая панель навигации (компактная)
             sidebarPanel = ModernUIHelper.CreateSidebar(new Size(220, 900));
 
-            // Логотип и приветствие
+            // Логотип библиотеки
             Label lblLogo = new Label
             {
-                Text = "АДМ",
-                Font = new Font("Segoe UI", 42, FontStyle.Bold),
+                Text = "📚",
+                Font = new Font("Segoe UI", 48),
                 ForeColor = ModernUIHelper.PrimaryAccent,
                 Size = new Size(220, 72),
                 Location = new Point(0, 20),
@@ -59,9 +59,9 @@ namespace LibrarySystem.Forms
 
             Label lblWelcome = new Label
             {
-                Text = "ПАНЕЛЬ\nАДМИНИСТРАТОРА",
+                Text = "БИБЛИОТЕКА\nБППК",
                 Font = new Font("Segoe UI", 14, FontStyle.Bold),
-                ForeColor = ModernUIHelper.TextPrimary,
+                ForeColor = ModernUIHelper.PrimaryAccent,
                 Size = new Size(220, 66),
                 Location = new Point(0, 100),
                 TextAlign = ContentAlignment.MiddleCenter,
@@ -71,7 +71,7 @@ namespace LibrarySystem.Forms
             Label lblUserName = new Label
             {
                 Text = currentUser.FullName,
-                Font = new Font("Segoe UI", 11),
+                Font = new Font("Segoe UI", 10),
                 ForeColor = ModernUIHelper.TextSecondary,
                 Size = new Size(200, 36),
                 Location = new Point(10, 170),
@@ -79,16 +79,16 @@ namespace LibrarySystem.Forms
                 BackColor = Color.Transparent
             };
 
-            Panel divider = ModernUIHelper.CreateDivider(new Point(10, 220), 200);
+            Panel divider = ModernUIHelper.CreateDivider(new Point(10, 215), 200);
 
-            // Кнопки навигации
-            btnApplicationsNav = ModernUIHelper.CreateSidebarButton("Заявки на книги", 270, true);
+            // Кнопки навигации (с иконками)
+            btnApplicationsNav = ModernUIHelper.CreateSidebarButton("  Заявки", 250, true);
             btnApplicationsNav.Click += (s, e) => ShowApplicationsPanel();
 
-            btnSpecialtiesNav = ModernUIHelper.CreateSidebarButton("Книги", 340);
+            btnSpecialtiesNav = ModernUIHelper.CreateSidebarButton("  Категории книг", 320);
             btnSpecialtiesNav.Click += (s, e) => ShowSpecialtiesPanel();
 
-            btnUsersNav = ModernUIHelper.CreateSidebarButton("Пользователи", 410);
+            btnUsersNav = ModernUIHelper.CreateSidebarButton("  Студенты", 390);
             btnUsersNav.Click += (s, e) => ShowUsersPanel();
 
             // Кнопка выхода
@@ -572,58 +572,87 @@ namespace LibrarySystem.Forms
             try
             {
                 List<User> users = DatabaseHelper.GetAllUsers();
-                
-                // Проверяем, что DataGridView инициализирован
+
                 if (dgvUsers == null) return;
-                
+
                 dgvUsers.DataSource = null;
                 dgvUsers.DataSource = users;
 
-                // Проверяем наличие столбцов перед доступом к ним
                 if (dgvUsers.Columns.Count > 0)
                 {
-                    // Используем проверку индексов для безопасного доступа
                     if (dgvUsers.Columns.Contains("Id"))
                     {
                         var idColumn = dgvUsers.Columns["Id"];
                         if (idColumn != null)
-                        {
                             idColumn.HeaderText = "ID";
-                        }
                     }
-                    
+
                     if (dgvUsers.Columns.Contains("Login"))
                     {
                         var loginColumn = dgvUsers.Columns["Login"];
                         if (loginColumn != null)
                             loginColumn.HeaderText = "Логин";
                     }
-                        
+
                     if (dgvUsers.Columns.Contains("Password"))
                     {
                         var passColumn = dgvUsers.Columns["Password"];
                         if (passColumn != null)
                             passColumn.Visible = false;
                     }
-                        
+
                     if (dgvUsers.Columns.Contains("FullName"))
                     {
                         var nameColumn = dgvUsers.Columns["FullName"];
                         if (nameColumn != null)
-                            nameColumn.HeaderText = "ФИО";
+                            nameColumn.HeaderText = "ФИО студента";
                     }
-                        
+
+                    if (dgvUsers.Columns.Contains("StudentNumber"))
+                    {
+                        var studentColumn = dgvUsers.Columns["StudentNumber"];
+                        if (studentColumn != null)
+                            studentColumn.HeaderText = "№ студ. билета";
+                    }
+
+                    if (dgvUsers.Columns.Contains("Address"))
+                    {
+                        var addressColumn = dgvUsers.Columns["Address"];
+                        if (addressColumn != null)
+                            addressColumn.HeaderText = "Адрес";
+                    }
+
+                    if (dgvUsers.Columns.Contains("PhoneNumber"))
+                    {
+                        var phoneColumn = dgvUsers.Columns["PhoneNumber"];
+                        if (phoneColumn != null)
+                            phoneColumn.HeaderText = "Телефон";
+                    }
+
+                    if (dgvUsers.Columns.Contains("Email"))
+                    {
+                        var emailColumn = dgvUsers.Columns["Email"];
+                        if (emailColumn != null)
+                            emailColumn.HeaderText = "Email";
+                    }
+
                     if (dgvUsers.Columns.Contains("Role"))
                     {
                         var roleColumn = dgvUsers.Columns["Role"];
                         if (roleColumn != null)
                             roleColumn.HeaderText = "Роль";
                     }
+
+                    if (dgvUsers.Columns.Contains("RegistrationDate"))
+                    {
+                        var regColumn = dgvUsers.Columns["RegistrationDate"];
+                        if (regColumn != null)
+                            regColumn.Visible = false;
+                    }
                 }
             }
             catch (Exception)
             {
-                // Не показываем ошибку пользователю
                 if (dgvUsers != null)
                 {
                     dgvUsers.DataSource = null;
