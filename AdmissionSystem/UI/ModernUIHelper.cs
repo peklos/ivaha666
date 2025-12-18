@@ -135,7 +135,7 @@ namespace LibrarySystem.UI
 
             panel.Paint += (s, e) =>
             {
-                var p = (Panel)s;
+                if (s is not Panel p) return;
                 // Тёплая тень
                 using (var pen = new Pen(Color.FromArgb(40, SecondaryAccent), 1))
                 {
@@ -285,7 +285,7 @@ namespace LibrarySystem.UI
         /// <summary>
         /// Создает карточку заявки на книгу
         /// </summary>
-        public static Panel CreateApplicationCard(BookRequest app, EventHandler onClick = null)
+        public static Panel CreateApplicationCard(BookRequest app, EventHandler? onClick = null)
         {
             var card = new Panel
             {

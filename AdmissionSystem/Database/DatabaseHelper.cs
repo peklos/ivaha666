@@ -124,7 +124,7 @@ namespace LibrarySystem.Database
         }
 
         // Методы для работы с пользователями
-        public static User GetUser(string login, string password)
+        public static User? GetUser(string login, string password)
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
@@ -149,12 +149,12 @@ namespace LibrarySystem.Database
             {
                 using (var connection = new SQLiteConnection(ConnectionString))
                 {
-                    user.Login = user.Login?.Trim();
-                    user.Password = user.Password?.Trim();
-                    user.Email = user.Email?.Trim();
-                    user.PhoneNumber = user.PhoneNumber?.Trim();
-                    user.StudentNumber = user.StudentNumber?.Trim();
-                    user.Address = user.Address?.Trim();
+                    user.Login = user.Login?.Trim() ?? "";
+                    user.Password = user.Password?.Trim() ?? "";
+                    user.Email = user.Email?.Trim() ?? "";
+                    user.PhoneNumber = user.PhoneNumber?.Trim() ?? "";
+                    user.StudentNumber = user.StudentNumber?.Trim() ?? "";
+                    user.Address = user.Address?.Trim() ?? "";
 
                     connection.Execute(@"
                         INSERT INTO Users (Login, Password, FullName, Email, PhoneNumber, StudentNumber, Address, Role, RegistrationDate)
