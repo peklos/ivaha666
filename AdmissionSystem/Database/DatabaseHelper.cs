@@ -10,8 +10,22 @@ namespace LibrarySystem.Database
 {
     public static class DatabaseHelper
     {
-        private static string dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "library.db");
-        private static string ConnectionString => $"Data Source={dbPath};Version=3;";
+        private static string DbPath
+                            {
+                                get
+                                {
+                                    var baseDir = AppContext.BaseDirectory;
+                            
+                                    if (string.IsNullOrWhiteSpace(baseDir))
+                                        throw new InvalidOperationException("BaseDirectory is not initialized");
+                            
+                                    return Path.Combine(baseDir, "library.db");
+                                }
+                            }
+                            
+                            private static string ConnectionString =>
+                                $"Data Source={DbPath};Version=3;";
+
 
         public static void InitializeDatabase()
         {
