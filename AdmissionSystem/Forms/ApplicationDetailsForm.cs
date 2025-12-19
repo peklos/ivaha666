@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using LibrarySystem.Database;
 using LibrarySystem.Models;
+using LibrarySystem.UI;
 
 namespace LibrarySystem.Forms
 {
@@ -24,17 +25,17 @@ namespace LibrarySystem.Forms
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.BackColor = UI.ModernUIHelper.LightBackground;
+            this.BackColor = ModernUIHelper.LightBackground;
             this.Padding = new Padding(20);
-            this.Size = new Size(620, 720);
+            this.Size = new Size(620, 550);
 
             // Заголовок
             Label lblTitle = new Label
             {
                 Text = "ПОДРОБНАЯ ИНФОРМАЦИЯ О ЗАЯВКЕ",
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                ForeColor = UI.ModernUIHelper.PrimaryAccent,
-                Size = new Size(580, 40),
+                ForeColor = ModernUIHelper.TextPrimary,
+                Size = new Size(580, 45),
                 Location = new Point(10, 10),
                 TextAlign = ContentAlignment.MiddleLeft,
                 BackColor = Color.Transparent
@@ -44,75 +45,73 @@ namespace LibrarySystem.Forms
             Panel infoPanel = new Panel
             {
                 Location = new Point(10, 60),
-                Size = new Size(580, 520),
-                BackColor = UI.ModernUIHelper.CardBackground,
+                Size = new Size(580, 350),
+                BackColor = ModernUIHelper.CardBackground,
                 Padding = new Padding(18)
             };
+            infoPanel.Paint += (s, e) =>
+            {
+                var p = (Panel)s;
+                using (var pen = new Pen(ModernUIHelper.BorderColor, 1))
+                {
+                    e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
+                }
+            };
 
-            int yPos = 10;
-            int labelWidth = 140;
+            int yPos = 20;
+            int labelWidth = 150;
             int valueWidth = 400;
 
             // Название книги
             AddInfoRow(infoPanel, "Название книги:", application.BookTitle, ref yPos, labelWidth, valueWidth);
-            
+
             // Автор
             AddInfoRow(infoPanel, "Автор:", application.Author, ref yPos, labelWidth, valueWidth);
-            
+
             // ISBN
             AddInfoRow(infoPanel, "ISBN:", application.ISBN, ref yPos, labelWidth, valueWidth);
-            
+
             // Категория
-            AddInfoRow(infoPanel, "Книга:", application.CategoryName, ref yPos, labelWidth, valueWidth);
-            
+            AddInfoRow(infoPanel, "Категория:", application.CategoryName, ref yPos, labelWidth, valueWidth);
+
             // Дата заявки
             AddInfoRow(infoPanel, "Дата заявки:", application.SubmittedAt, ref yPos, labelWidth, valueWidth);
-            
+
             // Статус
-            Color statusColor = application.Status == "Одобрено" ? UI.ModernUIHelper.SuccessColor :
-                               application.Status == "Отклонено" ? UI.ModernUIHelper.DangerColor : UI.ModernUIHelper.WarningColor;
+            Color statusColor = application.Status == "Одобрено" ? ModernUIHelper.PrimaryAccent :
+                               application.Status == "Отклонено" ? ModernUIHelper.NeutralDark : ModernUIHelper.SecondaryAccent;
             AddInfoRow(infoPanel, "Статус:", application.Status, ref yPos, labelWidth, valueWidth, statusColor);
-            
+
             // Заметки (только для админа)
             if (!string.IsNullOrEmpty(application.Notes) && isAdminMode)
             {
                 AddInfoRow(infoPanel, "Заметки:", application.Notes, ref yPos, labelWidth, valueWidth);
             }
 
-            // Кнопки — табличное расположение (до 3 кнопок)
-            var buttonPanel = new TableLayoutPanel
-            {
-                Location = new Point(10, 600),
-                Size = new Size(580, 80),
-                BackColor = Color.Transparent,
-                ColumnCount = 3,
-                RowCount = 1
-            };
-            for (int i = 0; i < 3; i++) buttonPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
+            // Кнопки
+            int btnY = 430;
 
-            Button btnClose = UI.ModernUIHelper.CreateGradientButton("ЗАКРЫТЬ", Point.Empty, new Size(1,1), UI.ModernUIHelper.SecondaryAccent, UI.ModernUIHelper.SecondaryAccent);
+            Button btnClose = ModernUIHelper.CreateGradientButton("ЗАКРЫТЬ", new Point(200, btnY), new Size(200, 50), ModernUIHelper.SecondaryAccent, ModernUIHelper.PrimaryAccent);
             btnClose.Click += (s, e) => this.DialogResult = DialogResult.Cancel;
 
-            btnClose.Dock = DockStyle.Fill;
-            buttonPanel.Controls.Add(btnClose, 1, 0);
+            this.Controls.Add(lblTitle);
+            this.Controls.Add(infoPanel);
+            this.Controls.Add(btnClose);
 
             if (isAdminMode && application.Status == "На рассмотрении")
             {
-                Button btnApprove = UI.ModernUIHelper.CreateGradientButton("ОДОБРИТЬ", Point.Empty, new Size(1,1), UI.ModernUIHelper.SuccessColor, UI.ModernUIHelper.SuccessColor);
+                Button btnApprove = ModernUIHelper.CreateGradientButton("ОДОБРИТЬ", new Point(10, btnY), new Size(180, 50), ModernUIHelper.PrimaryAccent, ModernUIHelper.SecondaryAccent);
                 btnApprove.Click += (s, e) => ApproveApplication();
 
-                Button btnReject = UI.ModernUIHelper.CreateGradientButton("ОТКЛОНИТЬ", Point.Empty, new Size(1,1), UI.ModernUIHelper.DangerColor, UI.ModernUIHelper.DangerColor);
+                Button btnReject = ModernUIHelper.CreateGradientButton("ОТКЛОНИТЬ", new Point(410, btnY), new Size(180, 50), ModernUIHelper.NeutralDarker, ModernUIHelper.NeutralDark);
                 btnReject.Click += (s, e) => RejectApplication();
 
-                btnApprove.Dock = DockStyle.Fill; btnReject.Dock = DockStyle.Fill;
-                buttonPanel.Controls.Add(btnApprove, 0, 0);
-                buttonPanel.Controls.Add(btnReject, 2, 0);
-            }
+                btnClose.Location = new Point(200, btnY);
+                btnClose.Size = new Size(200, 50);
 
-            // Добавляем контролы
-            this.Controls.Add(lblTitle);
-            this.Controls.Add(infoPanel);
-            this.Controls.Add(buttonPanel);
+                this.Controls.Add(btnApprove);
+                this.Controls.Add(btnReject);
+            }
         }
 
         private void AddInfoRow(Panel panel, string label, string value, ref int yPos, int labelWidth, int valueWidth, Color? valueColor = null)
@@ -121,27 +120,27 @@ namespace LibrarySystem.Forms
             Label lblLabel = new Label
             {
                 Text = label,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                ForeColor = UI.ModernUIHelper.TextSecondary,
-                Location = new Point(0, yPos),
-                Size = new Size(labelWidth, 25),
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                ForeColor = ModernUIHelper.TextSecondary,
+                Location = new Point(15, yPos),
+                Size = new Size(labelWidth, 30),
                 BackColor = Color.Transparent
             };
 
             // Значение
             Label lblValue = new Label
             {
-                Text = value,
-                Font = new Font("Segoe UI", 10),
-                ForeColor = valueColor ?? UI.ModernUIHelper.TextPrimary,
-                Location = new Point(labelWidth, yPos),
-                Size = new Size(valueWidth, 25),
+                Text = value ?? "—",
+                Font = new Font("Segoe UI", 11),
+                ForeColor = valueColor ?? ModernUIHelper.TextPrimary,
+                Location = new Point(labelWidth + 15, yPos),
+                Size = new Size(valueWidth, 30),
                 BackColor = Color.Transparent
             };
 
             panel.Controls.Add(lblLabel);
             panel.Controls.Add(lblValue);
-            yPos += 30;
+            yPos += 40;
         }
 
         private void ApproveApplication()

@@ -7,33 +7,35 @@ using LibrarySystem.Models;
 namespace LibrarySystem.UI
 {
     /// <summary>
-    /// Современный UI helper со светлой темой
+    /// Современный UI helper с черно-белой темой
     /// </summary>
     public static class ModernUIHelper
     {
-        // Центральная палитра (светлая, но не белая)
-        public static readonly Color LightBackground = ColorFromHex("#F0F6FA");
-        public static readonly Color CardBackground = ColorFromHex("#F7FBFF");
-        public static readonly Color SidebarBackground = ColorFromHex("#E3F0F8");
+        // Черно-белая палитра
+        public static readonly Color LightBackground = ColorFromHex("#FFFFFF");
+        public static readonly Color CardBackground = ColorFromHex("#F5F5F5");
+        public static readonly Color SidebarBackground = ColorFromHex("#1A1A1A");
 
-        // Акцентные цвета (глубокий синий + мягкая бирюза)
-        public static readonly Color PrimaryAccent = ColorFromHex("#1E6FB8");
-        public static readonly Color SecondaryAccent = ColorFromHex("#00A3C4");
-        public static readonly Color SuccessColor = ColorFromHex("#2E8B57");
-        public static readonly Color DangerColor = ColorFromHex("#D6453C");
-        public static readonly Color WarningColor = ColorFromHex("#E08E3E");
+        // Акцентные цвета (оттенки серого)
+        public static readonly Color PrimaryAccent = ColorFromHex("#000000");
+        public static readonly Color SecondaryAccent = ColorFromHex("#404040");
+        public static readonly Color SuccessColor = ColorFromHex("#2D2D2D");
+        public static readonly Color DangerColor = ColorFromHex("#4A4A4A");
+        public static readonly Color WarningColor = ColorFromHex("#666666");
 
         // Текст
-        public static readonly Color TextPrimary = ColorFromHex("#102A43");
-        public static readonly Color TextSecondary = ColorFromHex("#334E68");
-        public static readonly Color TextMuted = ColorFromHex("#6B7B86");
+        public static readonly Color TextPrimary = ColorFromHex("#000000");
+        public static readonly Color TextSecondary = ColorFromHex("#333333");
+        public static readonly Color TextMuted = ColorFromHex("#777777");
+        public static readonly Color TextLight = ColorFromHex("#FFFFFF");
 
-        // Дополнительные оттенки и градиенты
-        public static readonly Color SidebarGradientStart = ColorFromHex("#E6F2FA");
-        public static readonly Color SidebarGradientEnd = ColorFromHex("#DFF0F8");
-        public static readonly Color CardHoverBackground = ColorFromHex("#EAF6FB");
-        public static readonly Color NeutralDark = ColorFromHex("#98A3AA");
-        public static readonly Color NeutralDarker = ColorFromHex("#7B8B93");
+        // Дополнительные оттенки
+        public static readonly Color SidebarGradientStart = ColorFromHex("#2A2A2A");
+        public static readonly Color SidebarGradientEnd = ColorFromHex("#0A0A0A");
+        public static readonly Color CardHoverBackground = ColorFromHex("#E8E8E8");
+        public static readonly Color NeutralDark = ColorFromHex("#888888");
+        public static readonly Color NeutralDarker = ColorFromHex("#555555");
+        public static readonly Color BorderColor = ColorFromHex("#CCCCCC");
 
         /// <summary>
         /// Создает стильную кнопку с градиентом
@@ -47,22 +49,20 @@ namespace LibrarySystem.UI
                 Size = size,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                ForeColor = TextPrimary,
+                ForeColor = TextLight,
                 Cursor = Cursors.Hand,
                 BackColor = startColor
             };
 
-            // Make the button more pronounced (table-like): visible border, padding and margin
-            button.FlatAppearance.BorderSize = 1;
-            button.FlatAppearance.BorderColor = Color.FromArgb(90, NeutralDark);
+            button.FlatAppearance.BorderSize = 2;
+            button.FlatAppearance.BorderColor = PrimaryAccent;
             button.FlatAppearance.MouseOverBackColor = endColor;
             button.Padding = new Padding(12, 8, 12, 8);
             button.Margin = new Padding(6);
             button.BackColor = startColor;
-            button.ForeColor = TextPrimary;
+            button.ForeColor = TextLight;
             button.Cursor = Cursors.Hand;
 
-            // Slightly larger, bolder text for emphasis
             button.Font = new Font("Segoe UI", 11.5f, FontStyle.Bold);
 
             return button;
@@ -78,18 +78,17 @@ namespace LibrarySystem.UI
                 Location = location,
                 Size = size,
                 Font = new Font("Segoe UI", 11),
-                BackColor = CardBackground,
+                BackColor = LightBackground,
                 ForeColor = TextPrimary,
                 BorderStyle = BorderStyle.None,
                 Tag = placeholder
             };
 
-            // Создаем панель-контейнер для границы
             var panel = new Panel
             {
                 Location = location,
                 Size = new Size(size.Width, size.Height + 10),
-                BackColor = SidebarBackground,
+                BackColor = CardBackground,
                 Padding = new Padding(2)
             };
 
@@ -129,11 +128,10 @@ namespace LibrarySystem.UI
                 Padding = new Padding(20)
             };
 
-            // Добавляем эффект тени через границу
             panel.Paint += (s, e) =>
             {
                 var p = (Panel)s;
-                using (var pen = new Pen(Color.FromArgb(30, 255, 255, 255), 1))
+                using (var pen = new Pen(BorderColor, 1))
                 {
                     e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
                 }
@@ -155,7 +153,6 @@ namespace LibrarySystem.UI
                 Dock = DockStyle.Left
             };
 
-            // Градиент на боковой панели
             sidebar.Paint += (s, e) =>
             {
                 using (var brush = new LinearGradientBrush(
@@ -183,24 +180,24 @@ namespace LibrarySystem.UI
                 Size = new Size(220, 55),
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 12, FontStyle.Regular),
-                ForeColor = isActive ? TextPrimary : TextSecondary,
-                BackColor = isActive ? PrimaryAccent : Color.Transparent,
+                ForeColor = isActive ? TextPrimary : TextLight,
+                BackColor = isActive ? LightBackground : Color.Transparent,
                 TextAlign = ContentAlignment.MiddleLeft,
                 Cursor = Cursors.Hand
             };
 
             button.FlatAppearance.BorderSize = 0;
-            button.FlatAppearance.MouseOverBackColor = CardBackground;
+            button.FlatAppearance.MouseOverBackColor = SecondaryAccent;
 
             return button;
         }
 
         /// <summary>
-        /// Стилизует DataGridView в темной теме
+        /// Стилизует DataGridView в черно-белой теме
         /// </summary>
         public static void StyleDataGridView(DataGridView dgv)
         {
-            dgv.BackgroundColor = CardBackground;
+            dgv.BackgroundColor = LightBackground;
             dgv.BorderStyle = BorderStyle.None;
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
@@ -216,22 +213,22 @@ namespace LibrarySystem.UI
             dgv.RowTemplate.Height = 45;
 
             // Стиль заголовков
-            dgv.ColumnHeadersDefaultCellStyle.BackColor = SidebarBackground;
-            dgv.ColumnHeadersDefaultCellStyle.ForeColor = TextPrimary;
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = PrimaryAccent;
+            dgv.ColumnHeadersDefaultCellStyle.ForeColor = TextLight;
             dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11, FontStyle.Bold);
-            dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = SidebarBackground;
+            dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = PrimaryAccent;
             dgv.ColumnHeadersDefaultCellStyle.Padding = new Padding(10);
             dgv.ColumnHeadersHeight = 50;
 
             // Стиль ячеек
-            dgv.DefaultCellStyle.BackColor = CardBackground;
-            dgv.DefaultCellStyle.ForeColor = TextSecondary;
+            dgv.DefaultCellStyle.BackColor = LightBackground;
+            dgv.DefaultCellStyle.ForeColor = TextPrimary;
             dgv.DefaultCellStyle.Font = new Font("Segoe UI", 10);
-            dgv.DefaultCellStyle.SelectionBackColor = PrimaryAccent;
+            dgv.DefaultCellStyle.SelectionBackColor = CardHoverBackground;
             dgv.DefaultCellStyle.SelectionForeColor = TextPrimary;
             dgv.DefaultCellStyle.Padding = new Padding(10, 5, 10, 5);
 
-            dgv.GridColor = CardBackground;
+            dgv.GridColor = BorderColor;
         }
 
         /// <summary>
@@ -245,7 +242,7 @@ namespace LibrarySystem.UI
                 Location = location,
                 Size = size,
                 Font = new Font("Segoe UI", 11),
-                BackColor = CardBackground,
+                BackColor = LightBackground,
                 ForeColor = TextPrimary,
                 BorderStyle = BorderStyle.FixedSingle,
                 Minimum = min,
@@ -266,7 +263,7 @@ namespace LibrarySystem.UI
                 {
                     Location = location,
                     Size = new Size(width, 1),
-                    BackColor = CardBackground
+                    BackColor = BorderColor
                 };
         }
 
@@ -278,25 +275,25 @@ namespace LibrarySystem.UI
             var card = new Panel
             {
                 Size = new Size(350, 200),
-                BackColor = CardBackground,
+                BackColor = LightBackground,
                 Padding = new Padding(15),
                 Cursor = Cursors.Hand,
-                Tag = app // Сохраняем объект заявления
+                Tag = app
             };
 
-            // Определяем цвет статуса
+            // Определяем цвет статуса (оттенки серого)
             Color statusColor;
             string status = app.Status ?? "На рассмотрении";
             switch (status)
             {
                 case "Одобрено":
-                    statusColor = SuccessColor;
+                    statusColor = PrimaryAccent;
                     break;
                 case "Отклонено":
-                    statusColor = DangerColor;
+                    statusColor = NeutralDark;
                     break;
                 default:
-                    statusColor = WarningColor;
+                    statusColor = SecondaryAccent;
                     break;
             }
 
@@ -304,18 +301,17 @@ namespace LibrarySystem.UI
             card.Paint += (s, e) =>
             {
                 var panel = (Panel)s;
-                // Заливка
                 using (var brush = new SolidBrush(panel.BackColor))
                 {
                     e.Graphics.FillRectangle(brush, panel.ClientRectangle);
                 }
-                
+
                 // Рамка с цветом статуса сверху
                 using (var pen = new Pen(statusColor, 3))
                 {
                     e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
                 }
-                
+
                 // Тень
                 ControlPaint.DrawBorder(e.Graphics, panel.ClientRectangle,
                     Color.FromArgb(40, 0, 0, 0), 0, ButtonBorderStyle.None,
@@ -423,7 +419,7 @@ namespace LibrarySystem.UI
 
             card.MouseLeave += (s, e) =>
             {
-                card.BackColor = CardBackground;
+                card.BackColor = LightBackground;
                 card.Refresh();
             };
 

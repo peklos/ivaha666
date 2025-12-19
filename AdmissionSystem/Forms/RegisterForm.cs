@@ -32,41 +32,40 @@ namespace LibrarySystem.Forms
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.BackColor = Color.White;
+            this.BackColor = ModernUIHelper.LightBackground;
             this.DoubleBuffered = true;
 
-            // Фоновый градиент
-            this.Paint += (s, e) =>
+            // Главная карточка
+            Panel cardPanel = new Panel
             {
-                using (var brush = new LinearGradientBrush(
-                    this.ClientRectangle,
-                    Color.White,
-                    Color.White,
-                    LinearGradientMode.Vertical))
+                Location = new Point(100, 40),
+                Size = new Size(700, 680),
+                BackColor = ModernUIHelper.LightBackground
+            };
+            cardPanel.Paint += (s, e) =>
+            {
+                var p = (Panel)s;
+                using (var pen = new Pen(ModernUIHelper.BorderColor, 2))
                 {
-                    e.Graphics.FillRectangle(brush, this.ClientRectangle);
+                    e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
                 }
             };
-
-            // Главная карточка
-            Panel cardPanel = ModernUIHelper.CreateCard(new Point(100, 40), new Size(700, 680));
-            cardPanel.BackColor = Color.White;
 
             // Заголовок с иконкой
             Label lblIcon = new Label
             {
-                Text = "✨",
-                Font = new Font("Segoe UI", 48),
-                ForeColor = ModernUIHelper.SecondaryAccent,
-                Size = new Size(660, 80),
-                Location = new Point(20, 30),
+                Text = "REG",
+                Font = new Font("Segoe UI", 36, FontStyle.Bold),
+                ForeColor = ModernUIHelper.TextPrimary,
+                Size = new Size(660, 70),
+                Location = new Point(20, 20),
                 TextAlign = ContentAlignment.MiddleCenter,
                 BackColor = Color.Transparent
             };
 
             Label lblTitle = ModernUIHelper.CreateModernLabel(
                 "СОЗДАТЬ НОВЫЙ АККАУНТ",
-                new Point(20, 110),
+                new Point(20, 95),
                 18,
                 FontStyle.Bold,
                 ModernUIHelper.TextPrimary
@@ -76,235 +75,95 @@ namespace LibrarySystem.Forms
 
             Label lblSubtitle = ModernUIHelper.CreateModernLabel(
                 "Заполните форму для регистрации в системе",
-                new Point(20, 145),
+                new Point(20, 130),
                 10,
                 FontStyle.Regular,
-                ModernUIHelper.TextSecondary
+                ModernUIHelper.TextMuted
             );
             lblSubtitle.Size = new Size(660, 25);
             lblSubtitle.TextAlign = ContentAlignment.MiddleCenter;
 
             // Разделитель
-            Panel divider1 = ModernUIHelper.CreateDivider(new Point(20, 185), 660);
-            divider1.BackColor = Color.White;
+            Panel divider1 = new Panel
+            {
+                Location = new Point(20, 165),
+                Size = new Size(660, 2),
+                BackColor = ModernUIHelper.BorderColor
+            };
 
             // ФИО
             Label lblFullName = ModernUIHelper.CreateModernLabel(
                 "ПОЛНОЕ ИМЯ",
-                new Point(50, 210),
+                new Point(50, 185),
                 9,
                 FontStyle.Bold,
-                ModernUIHelper.TextMuted
+                ModernUIHelper.TextSecondary
             );
 
-            Panel panelFullNameBox = new Panel
-            {
-                Location = new Point(50, 235),
-                Size = new Size(600, 45),
-                BackColor = Color.White
-            };
+            Panel panelFullNameBox = CreateInputPanel(new Point(50, 210), new Size(600, 45));
+            txtFullName = CreateInput(panelFullNameBox);
 
-            txtFullName = new TextBox
-            {
-                Location = new Point(15, 11),
-                Size = new Size(570, 30),
-                Font = new Font("Segoe UI", 11),
-                BackColor = Color.White,
-                ForeColor = ModernUIHelper.TextPrimary,
-                BorderStyle = BorderStyle.None
-            };
-            txtFullName.PlaceholderText = "ФИО";
-            panelFullNameBox.Controls.Add(txtFullName);
-            panelFullNameBox.Paint += (s, e) =>
-            {
-                var p = (Panel)s;
-                using (var pen = new Pen(Color.Black, 2))
-                {
-                    e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
-                }
-            };
-
+            // Почта
             Label lblEmail = ModernUIHelper.CreateModernLabel(
                 "ПОЧТА",
                 new Point(50, 265),
                 9,
                 FontStyle.Bold,
-                ModernUIHelper.TextMuted
+                ModernUIHelper.TextSecondary
             );
 
-            Panel panelEmailBox = new Panel
-            {
-                Location = new Point(50, 290),
-                Size = new Size(600, 45),
-                BackColor = Color.White
-            };
-
-            txtEmail = new TextBox
-            {
-                Location = new Point(15, 11),
-                Size = new Size(570, 30),
-                Font = new Font("Segoe UI", 11),
-                BackColor = Color.White,
-                ForeColor = ModernUIHelper.TextPrimary,
-                BorderStyle = BorderStyle.None
-            };
-            txtEmail.PlaceholderText = "example@domain.ru";
-            panelEmailBox.Controls.Add(txtEmail);
-            panelEmailBox.Paint += (s, e) =>
-            {
-                var p = (Panel)s;
-                using (var pen = new Pen(Color.Black, 2))
-                {
-                    e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
-                }
-            };
+            Panel panelEmailBox = CreateInputPanel(new Point(50, 290), new Size(600, 45));
+            txtEmail = CreateInput(panelEmailBox);
 
             // Телефон
             Label lblPhone = ModernUIHelper.CreateModernLabel(
                 "ТЕЛЕФОН",
-                new Point(50, 320),
+                new Point(50, 345),
                 9,
                 FontStyle.Bold,
-                ModernUIHelper.TextMuted
+                ModernUIHelper.TextSecondary
             );
 
-            Panel panelPhoneBox = new Panel
-            {
-                Location = new Point(50, 345),
-                Size = new Size(600, 45),
-                BackColor = Color.White
-            };
-
-            txtPhoneNumber = new TextBox
-            {
-                Location = new Point(15, 11),
-                Size = new Size(570, 30),
-                Font = new Font("Segoe UI", 11),
-                BackColor = Color.White,
-                ForeColor = ModernUIHelper.TextPrimary,
-                BorderStyle = BorderStyle.None
-            };
-            txtPhoneNumber.PlaceholderText = "+7 (___) ___-__-__";
-            panelPhoneBox.Controls.Add(txtPhoneNumber);
-            panelPhoneBox.Paint += (s, e) =>
-            {
-                var p = (Panel)s;
-                using (var pen = new Pen(Color.Black, 2))
-                {
-                    e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
-                }
-            };
+            Panel panelPhoneBox = CreateInputPanel(new Point(50, 370), new Size(600, 45));
+            txtPhoneNumber = CreateInput(panelPhoneBox);
 
             // Логин
-
             Label lblLogin = ModernUIHelper.CreateModernLabel(
                 "ЛОГИН",
-                new Point(50, 375),
+                new Point(50, 425),
                 9,
                 FontStyle.Bold,
-                ModernUIHelper.TextMuted
+                ModernUIHelper.TextSecondary
             );
 
-            Panel panelLoginBox = new Panel
-            {
-                Location = new Point(50, 400),
-                Size = new Size(600, 45),
-                BackColor = Color.White
-            };
-
-            txtLogin = new TextBox
-            {
-                Location = new Point(15, 11),
-                Size = new Size(570, 30),
-                Font = new Font("Segoe UI", 11),
-                BackColor = Color.White,
-                ForeColor = ModernUIHelper.TextPrimary,
-                BorderStyle = BorderStyle.None
-            };
-            txtLogin.PlaceholderText = "Логин";
-            panelLoginBox.Controls.Add(txtLogin);
-            panelLoginBox.Paint += (s, e) =>
-            {
-                var p = (Panel)s;
-                using (var pen = new Pen(Color.Black, 2))
-                {
-                    e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
-                }
-            };
+            Panel panelLoginBox = CreateInputPanel(new Point(50, 450), new Size(600, 45));
+            txtLogin = CreateInput(panelLoginBox);
 
             // Пароль
             Label lblPassword = ModernUIHelper.CreateModernLabel(
                 "ПАРОЛЬ",
-                new Point(50, 455),
+                new Point(50, 505),
                 9,
                 FontStyle.Bold,
-                ModernUIHelper.TextMuted
+                ModernUIHelper.TextSecondary
             );
 
-            Panel panelPasswordBox = new Panel
-            {
-                Location = new Point(50, 480),
-                Size = new Size(290, 45),
-                BackColor = Color.White
-            };
-
-            txtPassword = new TextBox
-            {
-                Location = new Point(15, 11),
-                Size = new Size(260, 30),
-                Font = new Font("Segoe UI", 11),
-                BackColor = Color.White,
-                ForeColor = ModernUIHelper.TextPrimary,
-                BorderStyle = BorderStyle.None,
-                UseSystemPasswordChar = true
-            };
-            txtPassword.PlaceholderText = "Пароль";
-            panelPasswordBox.Controls.Add(txtPassword);
-            panelPasswordBox.Paint += (s, e) =>
-            {
-                var p = (Panel)s;
-                using (var pen = new Pen(Color.Black, 2))
-                {
-                    e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
-                }
-            };
+            Panel panelPasswordBox = CreateInputPanel(new Point(50, 530), new Size(290, 45));
+            txtPassword = CreateInput(panelPasswordBox);
+            txtPassword.UseSystemPasswordChar = true;
 
             // Подтверждение пароля
             Label lblConfirmPassword = ModernUIHelper.CreateModernLabel(
                 "ПОВТОРИТЕ ПАРОЛЬ",
-                new Point(360, 455),
+                new Point(360, 505),
                 9,
                 FontStyle.Bold,
-                ModernUIHelper.TextMuted
+                ModernUIHelper.TextSecondary
             );
 
-            Panel panelConfirmPasswordBox = new Panel
-            {
-                Location = new Point(360, 480),
-                Size = new Size(290, 45),
-                BackColor = Color.White
-            };
-
-            txtConfirmPassword = new TextBox
-            {
-                Location = new Point(15, 11),
-                Size = new Size(260, 30),
-                Font = new Font("Segoe UI", 11),
-                BackColor = Color.White,
-                ForeColor = ModernUIHelper.TextPrimary,
-                BorderStyle = BorderStyle.None,
-                UseSystemPasswordChar = true
-            };
-            txtConfirmPassword.PlaceholderText = "Повторите пароль";
-            panelConfirmPasswordBox.Controls.Add(txtConfirmPassword);
-            panelConfirmPasswordBox.Paint += (s, e) =>
-            {
-                var p = (Panel)s;
-                using (var pen = new Pen(Color.Black, 2))
-                {
-                    e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
-                }
-            };
+            Panel panelConfirmPasswordBox = CreateInputPanel(new Point(360, 530), new Size(290, 45));
+            txtConfirmPassword = CreateInput(panelConfirmPasswordBox);
+            txtConfirmPassword.UseSystemPasswordChar = true;
 
             // Показать пароль
             chkShowPassword = new CheckBox
@@ -312,7 +171,7 @@ namespace LibrarySystem.Forms
                 Text = "Показать пароли",
                 Font = new Font("Segoe UI", 9),
                 Size = new Size(200, 25),
-                Location = new Point(50, 535),
+                Location = new Point(50, 585),
                 ForeColor = ModernUIHelper.TextSecondary,
                 BackColor = Color.Transparent
             };
@@ -322,34 +181,9 @@ namespace LibrarySystem.Forms
                 txtConfirmPassword.UseSystemPasswordChar = !chkShowPassword.Checked;
             };
 
-            // Разделитель
-            Panel divider2 = ModernUIHelper.CreateDivider(new Point(20, 570), 660);
-            divider2.BackColor = Color.White;
-
-            // Кнопки
-            // Кнопки регистрации — таблица 2 столбца
-            var actionsPanel = new TableLayoutPanel
-            {
-                Location = new Point(50, 600),
-                Size = new Size(600, 110),
-                BackColor = Color.Transparent,
-                ColumnCount = 1,
-                RowCount = 2
-            };
-            actionsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            actionsPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 55F));
-            actionsPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 55F));
-
-            btnRegister = ModernUIHelper.CreateGradientButton("ЗАРЕГИСТРИРОВАТЬСЯ", Point.Empty, new Size(1,1), ModernUIHelper.PrimaryAccent, ModernUIHelper.PrimaryAccent);
+            // Кнопки регистрации
+            btnRegister = ModernUIHelper.CreateGradientButton("ЗАРЕГИСТРИРОВАТЬСЯ", new Point(50, 620), new Size(600, 50), ModernUIHelper.PrimaryAccent, ModernUIHelper.SecondaryAccent);
             btnRegister.Click += BtnRegister_Click;
-            btnCancel = ModernUIHelper.CreateGradientButton("ОТМЕНА", Point.Empty, new Size(1,1), Color.FromArgb(240,240,240), Color.FromArgb(240,240,240));
-            btnCancel.ForeColor = ModernUIHelper.TextPrimary;
-            btnCancel.Click += (s, e) => this.Close();
-
-            btnRegister.Dock = DockStyle.Fill; btnCancel.Dock = DockStyle.Fill;
-
-            actionsPanel.Controls.Add(btnRegister, 0, 0);
-            actionsPanel.Controls.Add(btnCancel, 0, 1);
 
             // Добавление элементов на карточку
             cardPanel.Controls.Add(lblIcon);
@@ -369,13 +203,46 @@ namespace LibrarySystem.Forms
             cardPanel.Controls.Add(lblConfirmPassword);
             cardPanel.Controls.Add(panelConfirmPasswordBox);
             cardPanel.Controls.Add(chkShowPassword);
-            cardPanel.Controls.Add(divider2);
-            cardPanel.Controls.Add(actionsPanel);
+            cardPanel.Controls.Add(btnRegister);
 
             this.Controls.Add(cardPanel);
 
             // Enter для регистрации
             this.AcceptButton = btnRegister;
+        }
+
+        private Panel CreateInputPanel(Point location, Size size)
+        {
+            Panel panel = new Panel
+            {
+                Location = location,
+                Size = size,
+                BackColor = ModernUIHelper.LightBackground
+            };
+            panel.Paint += (s, e) =>
+            {
+                var p = (Panel)s;
+                using (var pen = new Pen(ModernUIHelper.PrimaryAccent, 2))
+                {
+                    e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
+                }
+            };
+            return panel;
+        }
+
+        private TextBox CreateInput(Panel parent)
+        {
+            TextBox txt = new TextBox
+            {
+                Location = new Point(15, 11),
+                Size = new Size(parent.Size.Width - 30, 30),
+                Font = new Font("Segoe UI", 11),
+                BackColor = ModernUIHelper.LightBackground,
+                ForeColor = ModernUIHelper.TextPrimary,
+                BorderStyle = BorderStyle.None
+            };
+            parent.Controls.Add(txt);
+            return txt;
         }
 
         private void BtnRegister_Click(object sender, EventArgs e)

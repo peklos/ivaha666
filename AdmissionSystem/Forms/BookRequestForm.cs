@@ -39,12 +39,12 @@ namespace LibrarySystem.Forms
 
         private void InitializeComponent()
         {
-            this.Size = new Size(540, 420);
+            this.Size = new Size(540, 450);
             this.Text = "Заявка на книгу";
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.BackColor = ModernUIHelper.CardBackground;
+            this.BackColor = ModernUIHelper.LightBackground;
 
             int yPosition = 20;
 
@@ -52,127 +52,118 @@ namespace LibrarySystem.Forms
             Label lblTitle = new Label
             {
                 Text = "ЗАЯВКА НА КНИГУ",
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                ForeColor = ModernUIHelper.PrimaryAccent,
-                Size = new Size(490, 40),
+                Font = new Font("Segoe UI", 18, FontStyle.Bold),
+                ForeColor = ModernUIHelper.TextPrimary,
+                Size = new Size(490, 45),
                 Location = new Point(25, yPosition),
                 TextAlign = ContentAlignment.MiddleCenter,
                 BackColor = Color.Transparent
             };
-            yPosition += 50;
+            yPosition += 55;
 
             // Книга
             Label lblCategory = new Label
             {
-                Text = "Книга:",
-                Font = new Font("Segoe UI", 10),
+                Text = "КАТЕГОРИЯ",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
                 Location = new Point(25, yPosition),
-                Size = new Size(100, 25),
+                Size = new Size(200, 25),
                 ForeColor = ModernUIHelper.TextSecondary,
                 BackColor = Color.Transparent
             };
+            yPosition += 25;
+
             cmbCategory = new ComboBox
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(130, yPosition),
-                Size = new Size(360, 25),
+                Font = new Font("Segoe UI", 11),
+                Location = new Point(25, yPosition),
+                Size = new Size(475, 35),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 FlatStyle = FlatStyle.Flat,
-                BackColor = ModernUIHelper.SidebarBackground,
+                BackColor = ModernUIHelper.LightBackground,
                 ForeColor = ModernUIHelper.TextPrimary
             };
-            // Загрузка категорий
             var categories = DatabaseHelper.GetAllBookCategories();
             cmbCategory.DataSource = categories;
             cmbCategory.DisplayMember = "Name";
             cmbCategory.ValueMember = "Id";
-            yPosition += 40;
+            yPosition += 45;
 
             // Название книги
             Label lblBookTitle = new Label
             {
-                Text = "Название книги:",
-                Font = new Font("Segoe UI", 10),
+                Text = "НАЗВАНИЕ КНИГИ",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
                 Location = new Point(25, yPosition),
-                Size = new Size(120, 25),
+                Size = new Size(200, 25),
                 ForeColor = ModernUIHelper.TextSecondary,
                 BackColor = Color.Transparent
             };
+            yPosition += 25;
+
             txtBookTitle = new TextBox
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition + 25),
-                Size = new Size(485, 30),
+                Font = new Font("Segoe UI", 11),
+                Location = new Point(25, yPosition),
+                Size = new Size(475, 35),
                 BorderStyle = BorderStyle.FixedSingle,
-                BackColor = ModernUIHelper.SidebarBackground,
+                BackColor = ModernUIHelper.LightBackground,
                 ForeColor = ModernUIHelper.TextPrimary
             };
-            yPosition += 70;
+            yPosition += 45;
 
             // Автор
             Label lblAuthor = new Label
             {
-                Text = "Автор:",
-                Font = new Font("Segoe UI", 10),
+                Text = "АВТОР",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
                 Location = new Point(25, yPosition),
-                Size = new Size(100, 25),
+                Size = new Size(200, 25),
                 ForeColor = ModernUIHelper.TextSecondary,
                 BackColor = Color.Transparent
             };
+            yPosition += 25;
+
             txtAuthor = new TextBox
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition + 25),
-                Size = new Size(485, 30),
+                Font = new Font("Segoe UI", 11),
+                Location = new Point(25, yPosition),
+                Size = new Size(475, 35),
                 BorderStyle = BorderStyle.FixedSingle,
-                BackColor = ModernUIHelper.SidebarBackground,
+                BackColor = ModernUIHelper.LightBackground,
                 ForeColor = ModernUIHelper.TextPrimary
             };
-            yPosition += 70;
+            yPosition += 45;
 
             // ISBN
             Label lblISBN = new Label
             {
-                Text = "ISBN (необязательно):",
-                Font = new Font("Segoe UI", 10),
+                Text = "ISBN (необязательно)",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
                 Location = new Point(25, yPosition),
-                Size = new Size(150, 25),
-                ForeColor = ModernUIHelper.TextSecondary,
+                Size = new Size(200, 25),
+                ForeColor = ModernUIHelper.TextMuted,
                 BackColor = Color.Transparent
             };
+            yPosition += 25;
+
             txtISBN = new TextBox
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition + 25),
-                Size = new Size(485, 30),
+                Font = new Font("Segoe UI", 11),
+                Location = new Point(25, yPosition),
+                Size = new Size(475, 35),
                 BorderStyle = BorderStyle.FixedSingle,
-                BackColor = ModernUIHelper.SidebarBackground,
+                BackColor = ModernUIHelper.LightBackground,
                 ForeColor = ModernUIHelper.TextPrimary
             };
-            yPosition += 70;
+            yPosition += 50;
 
-            // Кнопки — расположим как таблицу (2 колонки)
-            var actionsPanel = new TableLayoutPanel
-            {
-                Location = new Point(25, yPosition),
-                Size = new Size(485, 50),
-                BackColor = Color.Transparent,
-                ColumnCount = 2,
-                RowCount = 1
-            };
-            actionsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            actionsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-
-            btnSubmit = ModernUIHelper.CreateGradientButton("ПОДАТЬ ЗАЯВКУ", Point.Empty, new Size(1,1), ModernUIHelper.PrimaryAccent, ModernUIHelper.PrimaryAccent);
+            // Кнопки
+            btnSubmit = ModernUIHelper.CreateGradientButton("ПОДАТЬ ЗАЯВКУ", new Point(25, yPosition), new Size(230, 50), ModernUIHelper.PrimaryAccent, ModernUIHelper.SecondaryAccent);
             btnSubmit.Click += BtnSubmit_Click;
 
-            btnCancel = ModernUIHelper.CreateGradientButton("ОТМЕНА", Point.Empty, new Size(1,1), ModernUIHelper.SecondaryAccent, ModernUIHelper.SecondaryAccent);
+            btnCancel = ModernUIHelper.CreateGradientButton("ОТМЕНА", new Point(270, yPosition), new Size(230, 50), ModernUIHelper.SecondaryAccent, ModernUIHelper.PrimaryAccent);
             btnCancel.Click += (s, e) => this.DialogResult = DialogResult.Cancel;
-
-            btnSubmit.Dock = DockStyle.Fill; btnCancel.Dock = DockStyle.Fill;
-
-            actionsPanel.Controls.Add(btnSubmit, 0, 0);
-            actionsPanel.Controls.Add(btnCancel, 1, 0);
 
             // Добавление контролов
             this.Controls.Add(lblTitle);
@@ -184,29 +175,8 @@ namespace LibrarySystem.Forms
             this.Controls.Add(txtAuthor);
             this.Controls.Add(lblISBN);
             this.Controls.Add(txtISBN);
-            this.Controls.Add(actionsPanel);
-        }
-
-        private Label CreateLabel(string text, int yPosition)
-        {
-            return new Label
-            {
-                Text = text,
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition),
-                Size = new Size(550, 20)
-            };
-        }
-
-        private TextBox CreateTextBox(int yPosition)
-        {
-            return new TextBox
-            {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition),
-                Size = new Size(550, 30),
-                BorderStyle = BorderStyle.FixedSingle
-            };
+            this.Controls.Add(btnSubmit);
+            this.Controls.Add(btnCancel);
         }
 
         private void BtnSubmit_Click(object sender, EventArgs e)
