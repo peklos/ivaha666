@@ -2,9 +2,24 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
+    <AssemblyName>BookStock</AssemblyName>
+    <RootNamespace>LibrarySystem</RootNamespace>
+
+    <!-- Настройки для публикации в один exe -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+
+    <!-- Информация о приложении -->
+    <Product>КНИЖНЫЙ ФОНД</Product>
+    <Company>BookStock Inc.</Company>
+    <Description>Система управления книжным фондом</Description>
+    <Version>2.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="admission.db">
+    <None Update="library.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\**\*">

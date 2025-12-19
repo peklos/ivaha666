@@ -10,8 +10,22 @@ namespace LibrarySystem.Database
 {
     public static class DatabaseHelper
     {
-        private static string dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "library.db");
-        private static string ConnectionString => $"Data Source={dbPath};Version=3;";
+        private static string DbPath
+                            {
+                                get
+                                {
+                                    var baseDir = AppContext.BaseDirectory;
+                            
+                                    if (string.IsNullOrWhiteSpace(baseDir))
+                                        throw new InvalidOperationException("BaseDirectory is not initialized");
+                            
+                                    return Path.Combine(baseDir, "library.db");
+                                }
+                            }
+                            
+                            private static string ConnectionString =>
+                                $"Data Source={DbPath};Version=3;";
+
 
         public static void InitializeDatabase()
         {
@@ -21,7 +35,7 @@ namespace LibrarySystem.Database
             {
                 connection.Open();
 
-                // Создание таблицы пользователей
+                // Создание таблицы пользователей с полями для студентов
                 connection.Execute(@"
                     CREATE TABLE IF NOT EXISTS Users (
                         Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,22 +44,17 @@ namespace LibrarySystem.Database
                         FullName TEXT NOT NULL,
                         Email TEXT,
                         PhoneNumber TEXT,
+                        StudentNumber TEXT,
+                        Address TEXT,
                         Role TEXT NOT NULL,
                         RegistrationDate TEXT NOT NULL
                     )");
 
-                // Попытка добавить колонки для совместимости со старыми БД (если их нет)
-                try
-                {
-                    connection.Execute("ALTER TABLE Users ADD COLUMN Email TEXT;");
-                }
-                catch { }
-
-                try
-                {
-                    connection.Execute("ALTER TABLE Users ADD COLUMN PhoneNumber TEXT;");
-                }
-                catch { }
+                // Добавляем новые колонки если их нет (для совместимости)
+                try { connection.Execute("ALTER TABLE Users ADD COLUMN Email TEXT;"); } catch { }
+                try { connection.Execute("ALTER TABLE Users ADD COLUMN PhoneNumber TEXT;"); } catch { }
+                try { connection.Execute("ALTER TABLE Users ADD COLUMN StudentNumber TEXT;"); } catch { }
+                try { connection.Execute("ALTER TABLE Users ADD COLUMN Address TEXT;"); } catch { }
 
                 // Создание таблицы категорий книг
                 connection.Execute(@"
@@ -74,58 +83,73 @@ namespace LibrarySystem.Database
                         FOREIGN KEY (BookCategoryId) REFERENCES BookCategories(Id)
                     )");
 
-                // Создание администратора по умолчанию
+                // Добавление тестовых данных
                 if (isNewDatabase)
                 {
-                    var adminExists = connection.ExecuteScalar<int>(
-                        "SELECT COUNT(*) FROM Users WHERE Login = 'admin'");
+                    // Администратор
+                    connection.Execute(@"
+                        INSERT INTO Users (Login, Password, FullName, Email, PhoneNumber, StudentNumber, Address, Role, RegistrationDate)
+                        VALUES ('admin', 'admin123', 'Администратор Библиотеки', 'admin@bppk.ru', '+7 (999) 000-00-01', '', 'г. Белгород, ул. Библиотечная, д. 1', 'Admin', @date)",
+                        new { date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
 
-                    if (adminExists == 0)
-                    {
-                        connection.Execute(@"
-                            INSERT INTO Users (Login, Password, FullName, Email, PhoneNumber, Role, RegistrationDate)
-                                VALUES ('admin', 'admin', 'Администратор', '', '', 'Admin', @date)",
-                                new { date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
-                    }
+                    // Библиотекарь
+                    connection.Execute(@"
+                        INSERT INTO Users (Login, Password, FullName, Email, PhoneNumber, StudentNumber, Address, Role, RegistrationDate)
+                        VALUES ('librarian', 'lib123', 'Иванова Мария Петровна', 'ivanova@bppk.ru', '+7 (999) 000-00-02', '', 'г. Белгород, ул. Центральная, д. 15', 'Admin', @date)",
+                        new { date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
 
-                    // Добавление категорий книг
+                    // Тестовые студенты
+                    connection.Execute(@"
+                        INSERT INTO Users (Login, Password, FullName, Email, PhoneNumber, StudentNumber, Address, Role, RegistrationDate)
+                        VALUES
+                        ('student1', 'pass123', 'Петров Иван Сергеевич', 'petrov@student.bppk.ru', '+7 (999) 111-11-11', 'СТ-2024-001', 'г. Белгород, ул. Студенческая, д. 5, кв. 12', 'User', @date),
+                        ('student2', 'pass123', 'Сидорова Анна Владимировна', 'sidorova@student.bppk.ru', '+7 (999) 222-22-22', 'СТ-2024-002', 'г. Белгород, пр. Славы, д. 78, кв. 45', 'User', @date),
+                        ('student3', 'pass123', 'Козлов Дмитрий Александрович', 'kozlov@student.bppk.ru', '+7 (999) 333-33-33', 'СТ-2024-003', 'г. Белгород, ул. Народный бульвар, д. 102', 'User', @date),
+                        ('student4', 'pass123', 'Морозова Елена Игоревна', 'morozova@student.bppk.ru', '+7 (999) 444-44-44', 'СТ-2023-015', 'г. Белгород, ул. Губкина, д. 33, кв. 8', 'User', @date),
+                        ('student5', 'pass123', 'Новиков Алексей Павлович', 'novikov@student.bppk.ru', '+7 (999) 555-55-55', 'СТ-2023-022', 'г. Белгород, ул. Щорса, д. 64, кв. 21', 'User', @date)",
+                        new { date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
+
+                    // Категории книг для колледжа
                     connection.Execute(@"
                         INSERT INTO BookCategories (Name, Code, BooksCount, Description)
                         VALUES
-                        ('Художественная литература', 'ART', 100, 'Романы, повести, рассказы'),
-                        ('Научная литература', 'SCI', 50, 'Учебники, монографии, научные статьи'),
-                        ('Техническая литература', 'TECH', 75, 'Руководства, справочники по технологиям'),
-                        ('Детская литература', 'CHILD', 60, 'Книги для детей и подростков')");
+                        ('Учебники по программированию', 'PROG', 150, 'Языки программирования, алгоритмы, структуры данных'),
+                        ('Техническая литература', 'TECH', 200, 'Компьютерные сети, операционные системы, базы данных'),
+                        ('Математика и физика', 'MATH', 120, 'Высшая математика, дискретная математика, физика'),
+                        ('Художественная литература', 'FICTION', 300, 'Классика, современная проза, поэзия'),
+                        ('Экономика и право', 'ECON', 80, 'Экономическая теория, правоведение, менеджмент'),
+                        ('Иностранные языки', 'LANG', 100, 'Английский, немецкий, учебные пособия'),
+                        ('История и философия', 'HIST', 90, 'История России, мировая история, философия'),
+                        ('Периодические издания', 'PERIOD', 50, 'Журналы, газеты, научные статьи')");
+
+                    // Тестовые заявки на книги
+                    connection.Execute(@"
+                        INSERT INTO BookRequests (UserId, BookCategoryId, BookTitle, Author, ISBN, RequestDate, Status, SubmissionDate, Notes)
+                        VALUES
+                        (3, 1, 'Чистый код', 'Роберт Мартин', '978-5-4461-0960-9', @date, 'На рассмотрении', @date, ''),
+                        (3, 1, 'Грокаем алгоритмы', 'Адитья Бхаргава', '978-5-4461-0923-4', @date, 'Одобрено', @date, 'Выдана до 15.01.2025'),
+                        (4, 2, 'Компьютерные сети', 'Эндрю Таненбаум', '978-5-4461-1248-7', @date, 'На рассмотрении', @date, ''),
+                        (5, 4, 'Мастер и Маргарита', 'Михаил Булгаков', '978-5-17-090325-1', @date, 'Одобрено', @date, ''),
+                        (6, 3, 'Высшая математика', 'Письменный Д.Т.', '978-5-8112-6421-4', @date, 'Отклонено', @date, 'Нет в наличии'),
+                        (7, 6, 'English Grammar in Use', 'Raymond Murphy', '978-1-108-45768-0', @date, 'На рассмотрении', @date, '')",
+                        new { date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
                 }
             }
         }
 
         // Методы для работы с пользователями
-        public static User GetUser(string login, string password)
+        public static User? GetUser(string login, string password)
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                // Fetch by login first, then compare password in managed code to avoid subtle DB-side issues
                 var trimmedLogin = login?.Trim();
                 var user = connection.QueryFirstOrDefault<User>(
                     "SELECT * FROM Users WHERE Login = @Login COLLATE NOCASE",
                     new { Login = trimmedLogin });
 
-                // Temporary debug logging to trace login issues
-                try
-                {
-                    Console.WriteLine($"[Auth] Attempt login='{trimmedLogin}'");
-                    if (user != null)
-                        Console.WriteLine($"[Auth] Found user Id={user.Id} Login='{user.Login}' StoredPassword='{user.Password}'");
-                    else
-                        Console.WriteLine("[Auth] No user found for login.");
-                }
-                catch { }
-
                 if (user == null)
                     return null;
 
-                // Compare trimmed passwords to avoid accidental leading/trailing spaces
                 if (string.Equals(user.Password?.Trim(), password?.Trim(), StringComparison.Ordinal))
                     return user;
 
@@ -139,19 +163,16 @@ namespace LibrarySystem.Database
             {
                 using (var connection = new SQLiteConnection(ConnectionString))
                 {
-                        // Ensure stored login/password have no accidental surrounding whitespace
-                        user.Login = user.Login?.Trim();
-                        user.Password = user.Password?.Trim();
-
-                    // Ensure stored login/password/email/phone have no accidental surrounding whitespace
-                    user.Login = user.Login?.Trim();
-                    user.Password = user.Password?.Trim();
-                    user.Email = user.Email?.Trim();
-                    user.PhoneNumber = user.PhoneNumber?.Trim();
+                    user.Login = user.Login?.Trim() ?? "";
+                    user.Password = user.Password?.Trim() ?? "";
+                    user.Email = user.Email?.Trim() ?? "";
+                    user.PhoneNumber = user.PhoneNumber?.Trim() ?? "";
+                    user.StudentNumber = user.StudentNumber?.Trim() ?? "";
+                    user.Address = user.Address?.Trim() ?? "";
 
                     connection.Execute(@"
-                        INSERT INTO Users (Login, Password, FullName, Email, PhoneNumber, Role, RegistrationDate)
-                        VALUES (@Login, @Password, @FullName, @Email, @PhoneNumber, @Role, @RegistrationDate)",
+                        INSERT INTO Users (Login, Password, FullName, Email, PhoneNumber, StudentNumber, Address, Role, RegistrationDate)
+                        VALUES (@Login, @Password, @FullName, @Email, @PhoneNumber, @StudentNumber, @Address, @Role, @RegistrationDate)",
                         user);
                     return true;
                 }
@@ -177,7 +198,8 @@ namespace LibrarySystem.Database
                 connection.Execute(@"
                     UPDATE Users
                     SET Login = @Login, Password = @Password, FullName = @FullName,
-                        Email = @Email, PhoneNumber = @PhoneNumber, Role = @Role
+                        Email = @Email, PhoneNumber = @PhoneNumber, StudentNumber = @StudentNumber,
+                        Address = @Address, Role = @Role
                     WHERE Id = @Id", user);
             }
         }

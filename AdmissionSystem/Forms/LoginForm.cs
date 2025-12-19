@@ -23,153 +23,176 @@ namespace LibrarySystem.Forms
 
         public LoginForm()
         {
-            // Инициализируем базу данных в конструкторе
-            try
-            {
-                DatabaseHelper.InitializeDatabase();
-            }
-            catch (Exception ex)
-            {
-                // Логируем ошибку, но не показываем пользователю
-                Console.WriteLine($"Ошибка инициализации базы данных: {ex.Message}");
-                // Можно создать файл базы данных в памяти или использовать другой метод
-            }
-            
             InitializeComponent();
         }
 
         private void InitializeComponent()
         {
             this.Size = new Size(1000, 650);
-            this.Text = "Библиотека БППК - Вход";
+            this.Text = "КНИЖНЫЙ ФОНД — Авторизация";
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.BackColor = ModernUIHelper.LightBackground;
+            this.BackColor = Color.White;
             this.DoubleBuffered = true;
 
-            // Левая декоративная панель с градиентом
+            // Левая панель (черная с названием)
             panelLeft = new Panel
             {
-                Size = new Size(400, 650),
+                Size = new Size(450, 650),
                 Location = new Point(0, 0),
-                BackColor = ModernUIHelper.SidebarBackground
+                BackColor = Color.FromArgb(20, 20, 20)
             };
             panelLeft.Paint += PanelLeft_Paint;
 
-            // Логотип и текст на левой панели
-            Label lblLogo = new Label
+            // Название системы
+            Label lblSystemName = new Label
             {
-                Text = "📚",
-                Font = new Font("Segoe UI", 72),
-                ForeColor = ModernUIHelper.PrimaryAccent,
-                Size = new Size(350, 120),
-                Location = new Point(25, 150),
-                TextAlign = ContentAlignment.MiddleCenter,
+                Text = "КНИЖНЫЙ\nФОНД",
+                Font = new Font("Segoe UI", 42, FontStyle.Bold),
+                ForeColor = Color.White,
+                Size = new Size(400, 140),
+                Location = new Point(25, 180),
+                TextAlign = ContentAlignment.MiddleLeft,
                 BackColor = Color.Transparent
             };
 
-            Label lblAppName = new Label
+            Label lblTagline = new Label
             {
-                Text = "БИБЛИОТЕКА\nБППК",
-                Font = new Font("Segoe UI", 28, FontStyle.Bold),
-                ForeColor = ModernUIHelper.TextPrimary,
-                Size = new Size(350, 120),
-                Location = new Point(25, 280),
-                TextAlign = ContentAlignment.MiddleCenter,
+                Text = "Система управления\nкнижным фондом",
+                Font = new Font("Segoe UI Light", 16),
+                ForeColor = Color.FromArgb(180, 180, 180),
+                Size = new Size(400, 60),
+                Location = new Point(25, 340),
+                TextAlign = ContentAlignment.MiddleLeft,
                 BackColor = Color.Transparent
             };
 
-            Label lblAppSubtitle = new Label
+            // Декоративные линии
+            Panel line1 = new Panel
             {
-                Text = "Система управления библиотекой",
-                Font = new Font("Segoe UI", 11),
-                ForeColor = ModernUIHelper.TextSecondary,
-                Size = new Size(350, 60),
-                Location = new Point(25, 410),
-                TextAlign = ContentAlignment.MiddleCenter,
+                Size = new Size(80, 3),
+                Location = new Point(25, 160),
+                BackColor = Color.White
+            };
+
+            Panel line2 = new Panel
+            {
+                Size = new Size(150, 1),
+                Location = new Point(25, 420),
+                BackColor = Color.FromArgb(60, 60, 60)
+            };
+
+            // Версия
+            Label lblVersion = new Label
+            {
+                Text = "v2.0",
+                Font = new Font("Consolas", 11),
+                ForeColor = Color.FromArgb(100, 100, 100),
+                Size = new Size(100, 25),
+                Location = new Point(25, 580),
                 BackColor = Color.Transparent
             };
 
-            panelLeft.Controls.Add(lblLogo);
-            panelLeft.Controls.Add(lblAppName);
-            panelLeft.Controls.Add(lblAppSubtitle);
+            panelLeft.Controls.Add(lblSystemName);
+            panelLeft.Controls.Add(lblTagline);
+            panelLeft.Controls.Add(line1);
+            panelLeft.Controls.Add(line2);
+            panelLeft.Controls.Add(lblVersion);
 
-            // Правая панель с формой входа
+            // Правая панель (белая с формой)
             panelRight = new Panel
             {
-                Size = new Size(600, 650),
-                Location = new Point(400, 0),
-                BackColor = ModernUIHelper.CardBackground
+                Size = new Size(550, 650),
+                Location = new Point(450, 0),
+                BackColor = Color.White
             };
 
             // Заголовок формы
-            Label lblFormTitle = ModernUIHelper.CreateModernLabel(
-                "ВХОД В СИСТЕМУ",
-                new Point(80, 80),
-                20,
-                FontStyle.Bold,
-                ModernUIHelper.TextPrimary
-            );
+            Label lblFormTitle = new Label
+            {
+                Text = "ВХОД В СИСТЕМУ",
+                Font = new Font("Segoe UI", 24, FontStyle.Bold),
+                ForeColor = Color.Black,
+                Size = new Size(450, 50),
+                Location = new Point(50, 120),
+                BackColor = Color.Transparent
+            };
 
-            Label lblFormSubtitle = ModernUIHelper.CreateModernLabel(
-                "Введите ваши учётные данные для продолжения",
-                new Point(80, 120),
-                10,
-                FontStyle.Regular,
-                ModernUIHelper.TextSecondary
-            );
+            Label lblFormSubtitle = new Label
+            {
+                Text = "Введите учетные данные для входа",
+                Font = new Font("Segoe UI", 11),
+                ForeColor = Color.FromArgb(120, 120, 120),
+                Size = new Size(450, 30),
+                Location = new Point(50, 175),
+                BackColor = Color.Transparent
+            };
 
             // Логин
-            Label lblLogin = ModernUIHelper.CreateModernLabel(
-                "ЛОГИН",
-                new Point(80, 190),
-                9,
-                FontStyle.Bold,
-                ModernUIHelper.TextMuted
-            );
+            Label lblLogin = new Label
+            {
+                Text = "ЛОГИН",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                ForeColor = Color.FromArgb(80, 80, 80),
+                Size = new Size(400, 20),
+                Location = new Point(50, 240),
+                BackColor = Color.Transparent
+            };
 
             Panel panelLoginBox = new Panel
             {
-                Location = new Point(80, 215),
-                Size = new Size(440, 45),
-                BackColor = ModernUIHelper.SidebarBackground
+                Location = new Point(50, 265),
+                Size = new Size(400, 50),
+                BackColor = Color.FromArgb(245, 245, 245)
+            };
+            panelLoginBox.Paint += (s, e) =>
+            {
+                using (var pen = new Pen(Color.FromArgb(200, 200, 200), 1))
+                    e.Graphics.DrawRectangle(pen, 0, 0, panelLoginBox.Width - 1, panelLoginBox.Height - 1);
             };
 
             txtLogin = new TextBox
             {
-                Location = new Point(15, 11),
-                Size = new Size(410, 30),
+                Location = new Point(15, 12),
+                Size = new Size(370, 30),
                 Font = new Font("Segoe UI", 12),
-                BackColor = ModernUIHelper.SidebarBackground,
-                ForeColor = ModernUIHelper.TextPrimary,
+                BackColor = Color.FromArgb(245, 245, 245),
+                ForeColor = Color.Black,
                 BorderStyle = BorderStyle.None
             };
             panelLoginBox.Controls.Add(txtLogin);
 
             // Пароль
-            Label lblPassword = ModernUIHelper.CreateModernLabel(
-                "ПАРОЛЬ",
-                new Point(80, 285),
-                9,
-                FontStyle.Bold,
-                ModernUIHelper.TextMuted
-            );
+            Label lblPassword = new Label
+            {
+                Text = "ПАРОЛЬ",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                ForeColor = Color.FromArgb(80, 80, 80),
+                Size = new Size(400, 20),
+                Location = new Point(50, 330),
+                BackColor = Color.Transparent
+            };
 
             Panel panelPasswordBox = new Panel
             {
-                Location = new Point(80, 310),
-                Size = new Size(440, 45),
-                BackColor = ModernUIHelper.SidebarBackground
+                Location = new Point(50, 355),
+                Size = new Size(400, 50),
+                BackColor = Color.FromArgb(245, 245, 245)
+            };
+            panelPasswordBox.Paint += (s, e) =>
+            {
+                using (var pen = new Pen(Color.FromArgb(200, 200, 200), 1))
+                    e.Graphics.DrawRectangle(pen, 0, 0, panelPasswordBox.Width - 1, panelPasswordBox.Height - 1);
             };
 
             txtPassword = new TextBox
             {
-                Location = new Point(15, 11),
-                Size = new Size(410, 30),
+                Location = new Point(15, 12),
+                Size = new Size(370, 30),
                 Font = new Font("Segoe UI", 12),
-                BackColor = ModernUIHelper.SidebarBackground,
-                ForeColor = ModernUIHelper.TextPrimary,
+                BackColor = Color.FromArgb(245, 245, 245),
+                ForeColor = Color.Black,
                 BorderStyle = BorderStyle.None,
                 UseSystemPasswordChar = true
             };
@@ -181,8 +204,8 @@ namespace LibrarySystem.Forms
                 Text = "Показать пароль",
                 Font = new Font("Segoe UI", 9),
                 Size = new Size(200, 25),
-                Location = new Point(80, 365),
-                ForeColor = ModernUIHelper.TextSecondary,
+                Location = new Point(50, 415),
+                ForeColor = Color.FromArgb(100, 100, 100),
                 BackColor = Color.Transparent
             };
             chkShowPassword.CheckedChanged += (s, e) =>
@@ -190,42 +213,75 @@ namespace LibrarySystem.Forms
                 txtPassword.UseSystemPasswordChar = !chkShowPassword.Checked;
             };
 
-            // Кнопка входа с градиентом
-            btnLogin = ModernUIHelper.CreateGradientButton(
-                "ВОЙТИ В СИСТЕМУ",
-                new Point(80, 415),
-                new Size(440, 50),
-                ModernUIHelper.PrimaryAccent,
-                ModernUIHelper.PrimaryAccent
-            );
+            // Кнопка входа (черная)
+            btnLogin = new Button
+            {
+                Text = "ВОЙТИ",
+                Location = new Point(50, 460),
+                Size = new Size(190, 50),
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black,
+                Cursor = Cursors.Hand
+            };
+            btnLogin.FlatAppearance.BorderSize = 0;
             btnLogin.Click += BtnLogin_Click;
+            btnLogin.MouseEnter += (s, e) => btnLogin.BackColor = Color.FromArgb(40, 40, 40);
+            btnLogin.MouseLeave += (s, e) => btnLogin.BackColor = Color.Black;
 
-            // Кнопка регистрации
-            btnRegister = ModernUIHelper.CreateGradientButton(
-                "РЕГИСТРАЦИЯ",
-                new Point(80, 480),
-                new Size(440, 50),
-                ModernUIHelper.SecondaryAccent,
-                ModernUIHelper.SecondaryAccent
-            );
+            // Кнопка регистрации (контурная)
+            btnRegister = new Button
+            {
+                Text = "РЕГИСТРАЦИЯ",
+                Location = new Point(260, 460),
+                Size = new Size(190, 50),
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                ForeColor = Color.Black,
+                BackColor = Color.White,
+                Cursor = Cursors.Hand
+            };
+            btnRegister.FlatAppearance.BorderSize = 2;
+            btnRegister.FlatAppearance.BorderColor = Color.Black;
             btnRegister.Click += BtnRegister_Click;
+            btnRegister.MouseEnter += (s, e) => btnRegister.BackColor = Color.FromArgb(245, 245, 245);
+            btnRegister.MouseLeave += (s, e) => btnRegister.BackColor = Color.White;
 
             // Ссылка на инструкцию
             linkInstruction = new LinkLabel
             {
-                Text = "📖 Инструкция пользователя",
-                Font = new Font("Segoe UI", 10),
-                Size = new Size(440, 30),
-                Location = new Point(80, 560),
-                TextAlign = ContentAlignment.MiddleCenter,
-                LinkColor = ModernUIHelper.SecondaryAccent,
-                ActiveLinkColor = ModernUIHelper.PrimaryAccent,
+                Text = "Инструкция пользователя",
+                Font = new Font("Segoe UI", 9),
+                Size = new Size(200, 25),
+                Location = new Point(50, 530),
+                LinkColor = Color.FromArgb(80, 80, 80),
+                ActiveLinkColor = Color.Black,
                 BackColor = Color.Transparent,
                 Cursor = Cursors.Hand
             };
             linkInstruction.LinkClicked += LinkInstruction_LinkClicked;
 
-            // Добавление элементов на правую панель
+            // Разделитель
+            Panel divider = new Panel
+            {
+                Size = new Size(400, 1),
+                Location = new Point(50, 570),
+                BackColor = Color.FromArgb(230, 230, 230)
+            };
+
+            // Тестовые данные
+            Label lblTestData = new Label
+            {
+                Text = "Тест: admin / admin123  |  student1 / pass123",
+                Font = new Font("Consolas", 9),
+                ForeColor = Color.FromArgb(150, 150, 150),
+                Size = new Size(400, 20),
+                Location = new Point(50, 585),
+                BackColor = Color.Transparent
+            };
+
+            // Добавляем элементы на правую панель
             panelRight.Controls.Add(lblFormTitle);
             panelRight.Controls.Add(lblFormSubtitle);
             panelRight.Controls.Add(lblLogin);
@@ -236,31 +292,32 @@ namespace LibrarySystem.Forms
             panelRight.Controls.Add(btnLogin);
             panelRight.Controls.Add(btnRegister);
             panelRight.Controls.Add(linkInstruction);
+            panelRight.Controls.Add(divider);
+            panelRight.Controls.Add(lblTestData);
 
             this.Controls.Add(panelLeft);
             this.Controls.Add(panelRight);
 
-            // Enter для входа
             this.AcceptButton = btnLogin;
         }
 
         private void PanelLeft_Paint(object sender, PaintEventArgs e)
         {
-            // Рисуем градиент на левой панели
+            // Градиент на левой панели
             using (var brush = new LinearGradientBrush(
                 panelLeft.ClientRectangle,
-                ModernUIHelper.PrimaryAccent,
-                ModernUIHelper.SecondaryAccent,
-                45F))
+                Color.FromArgb(15, 15, 15),
+                Color.FromArgb(35, 35, 35),
+                LinearGradientMode.ForwardDiagonal))
             {
                 e.Graphics.FillRectangle(brush, panelLeft.ClientRectangle);
             }
 
-            // Добавляем декоративные круги
-            using (var circleBrush = new SolidBrush(Color.FromArgb(30, 255, 255, 255)))
+            // Декоративные круги
+            using (var brush = new SolidBrush(Color.FromArgb(10, 255, 255, 255)))
             {
-                e.Graphics.FillEllipse(circleBrush, -50, -50, 200, 200);
-                e.Graphics.FillEllipse(circleBrush, 250, 450, 250, 250);
+                e.Graphics.FillEllipse(brush, -100, 400, 250, 250);
+                e.Graphics.FillEllipse(brush, 300, -80, 200, 200);
             }
         }
 
@@ -271,7 +328,7 @@ namespace LibrarySystem.Forms
 
             if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Пожалуйста, заполните все поля!", "Ошибка",
+                MessageBox.Show("Заполните все поля!", "Внимание",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -305,7 +362,7 @@ namespace LibrarySystem.Forms
             }
             catch (Exception)
             {
-                MessageBox.Show("Ошибка подключения к базе данных. Пожалуйста, попробуйте позже.", "Ошибка",
+                MessageBox.Show("Ошибка подключения к базе данных.", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -326,7 +383,6 @@ namespace LibrarySystem.Forms
 
         private void LinkInstruction_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            // Сначала ищем в корне проекта
             string rootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "Инструкция_пользователя.docx");
             string resourcesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Инструкция_пользователя.docx");
 

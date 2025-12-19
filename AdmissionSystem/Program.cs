@@ -12,12 +12,24 @@ namespace LibrarySystem
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
 
-            // Инициализация базы данных
-            DatabaseHelper.InitializeDatabase();
+            try
+            {
+                // Инициализация базы данных
+                DatabaseHelper.InitializeDatabase();
 
-            // Запуск формы входа
-            Application.Run(new LoginForm());
+                // Запуск формы входа
+                Application.Run(new LoginForm());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Произошла ошибка при запуске приложения:\n\n{ex.Message}\n\n{ex.StackTrace}",
+                    "Ошибка запуска",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }

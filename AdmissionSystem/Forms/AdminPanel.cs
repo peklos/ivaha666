@@ -14,6 +14,7 @@ namespace LibrarySystem.Forms
         private User currentUser = null!;
         private Panel sidebarPanel = null!;
         private Panel contentPanel = null!;
+        private Panel headerPanel = null!;
         private Panel applicationsPanel = null!;
         private Panel specialtiesPanel = null!;
         private Panel usersPanel = null!;
@@ -24,7 +25,7 @@ namespace LibrarySystem.Forms
         private Button btnSpecialtiesNav = null!;
         private Button btnUsersNav = null!;
         private Label lblPageTitle = null!;
-        private Panel selectedApplicationCard = null!;
+        private Panel? selectedApplicationCard = null;
 
         public AdminPanel(User user)
         {
@@ -36,76 +37,131 @@ namespace LibrarySystem.Forms
 
         private void InitializeComponent()
         {
-            this.Size = new Size(1500, 900);
-            this.Text = "Панель администратора";
+            this.Size = new Size(1450, 880);
+            this.Text = "КНИЖНЫЙ ФОНД — Панель администратора";
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.BackColor = ModernUIHelper.LightBackground;
+            this.BackColor = Color.FromArgb(250, 250, 250);
             this.DoubleBuffered = true;
 
-            // Боковая панель навигации (компактная)
-            sidebarPanel = ModernUIHelper.CreateSidebar(new Size(220, 900));
+            // Боковая панель (черная)
+            sidebarPanel = new Panel
+            {
+                Size = new Size(260, 880),
+                Location = new Point(0, 0),
+                BackColor = Color.FromArgb(15, 15, 15),
+                Dock = DockStyle.Left
+            };
 
-            // Логотип и приветствие
+            // Логотип
             Label lblLogo = new Label
             {
-                Text = "АДМ",
-                Font = new Font("Segoe UI", 42, FontStyle.Bold),
-                ForeColor = ModernUIHelper.PrimaryAccent,
-                Size = new Size(220, 72),
-                Location = new Point(0, 20),
-                TextAlign = ContentAlignment.MiddleCenter,
+                Text = "КНИЖНЫЙ\nФОНД",
+                Font = new Font("Segoe UI", 20, FontStyle.Bold),
+                ForeColor = Color.White,
+                Size = new Size(240, 75),
+                Location = new Point(10, 20),
+                TextAlign = ContentAlignment.MiddleLeft,
                 BackColor = Color.Transparent
             };
 
-            Label lblWelcome = new Label
+            Label lblRole = new Label
             {
-                Text = "ПАНЕЛЬ\nАДМИНИСТРАТОРА",
-                Font = new Font("Segoe UI", 14, FontStyle.Bold),
-                ForeColor = ModernUIHelper.TextPrimary,
-                Size = new Size(220, 66),
-                Location = new Point(0, 100),
-                TextAlign = ContentAlignment.MiddleCenter,
+                Text = "[АДМИНИСТРАТОР]",
+                Font = new Font("Consolas", 10),
+                ForeColor = Color.FromArgb(180, 180, 180),
+                Size = new Size(240, 20),
+                Location = new Point(10, 100),
                 BackColor = Color.Transparent
             };
 
-            Label lblUserName = new Label
+            // Информация о пользователе
+            Panel userInfoPanel = new Panel
             {
-                Text = currentUser.FullName,
-                Font = new Font("Segoe UI", 11),
-                ForeColor = ModernUIHelper.TextSecondary,
-                Size = new Size(200, 36),
-                Location = new Point(10, 170),
+                Size = new Size(240, 70),
+                Location = new Point(10, 135),
+                BackColor = Color.FromArgb(28, 28, 28)
+            };
+
+            Label lblAdminIcon = new Label
+            {
+                Text = "[*]",
+                Font = new Font("Consolas", 18),
+                ForeColor = Color.White,
+                Size = new Size(45, 45),
+                Location = new Point(10, 12),
                 TextAlign = ContentAlignment.MiddleCenter,
                 BackColor = Color.Transparent
             };
 
-            Panel divider = ModernUIHelper.CreateDivider(new Point(10, 220), 200);
+            Label lblAdminName = new Label
+            {
+                Text = currentUser.FullName.Length > 16
+                    ? currentUser.FullName.Substring(0, 13) + "..."
+                    : currentUser.FullName,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                ForeColor = Color.White,
+                Size = new Size(175, 25),
+                Location = new Point(60, 15),
+                BackColor = Color.Transparent
+            };
 
-            // Кнопки навигации
-            btnApplicationsNav = ModernUIHelper.CreateSidebarButton("Заявки на книги", 270, true);
+            Label lblAdminRole = new Label
+            {
+                Text = "Библиотекарь",
+                Font = new Font("Segoe UI", 9),
+                ForeColor = Color.FromArgb(130, 130, 130),
+                Size = new Size(175, 20),
+                Location = new Point(60, 38),
+                BackColor = Color.Transparent
+            };
+
+            userInfoPanel.Controls.Add(lblAdminIcon);
+            userInfoPanel.Controls.Add(lblAdminName);
+            userInfoPanel.Controls.Add(lblAdminRole);
+
+            // Разделитель
+            Panel divider1 = new Panel
+            {
+                Size = new Size(220, 1),
+                Location = new Point(20, 225),
+                BackColor = Color.FromArgb(45, 45, 45)
+            };
+
+            // Меню
+            Label lblMenu = new Label
+            {
+                Text = "УПРАВЛЕНИЕ",
+                Font = new Font("Segoe UI", 9),
+                ForeColor = Color.FromArgb(90, 90, 90),
+                Size = new Size(200, 20),
+                Location = new Point(20, 245),
+                BackColor = Color.Transparent
+            };
+
+            btnApplicationsNav = CreateNavButton("ЗАЯВКИ", 275, true);
             btnApplicationsNav.Click += (s, e) => ShowApplicationsPanel();
 
-            btnSpecialtiesNav = ModernUIHelper.CreateSidebarButton("Книги", 340);
+            btnSpecialtiesNav = CreateNavButton("КАТЕГОРИИ", 330, false);
             btnSpecialtiesNav.Click += (s, e) => ShowSpecialtiesPanel();
 
-            btnUsersNav = ModernUIHelper.CreateSidebarButton("Пользователи", 410);
+            btnUsersNav = CreateNavButton("ПОЛЬЗОВАТЕЛИ", 385, false);
             btnUsersNav.Click += (s, e) => ShowUsersPanel();
 
             // Кнопка выхода
             Button btnLogout = new Button
             {
-                Text = "Выход",
-                Location = new Point(0, 800),
-                Size = new Size(220, 55),
+                Text = "[ ВЫХОД ]",
+                Location = new Point(0, 790),
+                Size = new Size(260, 50),
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 12),
-                ForeColor = ModernUIHelper.DangerColor,
+                Font = new Font("Consolas", 11),
+                ForeColor = Color.FromArgb(130, 130, 130),
                 BackColor = Color.Transparent,
-                TextAlign = ContentAlignment.MiddleLeft,
+                TextAlign = ContentAlignment.MiddleCenter,
                 Cursor = Cursors.Hand
             };
             btnLogout.FlatAppearance.BorderSize = 0;
-            btnLogout.FlatAppearance.MouseOverBackColor = ModernUIHelper.CardBackground;
+            btnLogout.FlatAppearance.MouseOverBackColor = Color.FromArgb(35, 35, 35);
             btnLogout.Click += (s, e) =>
             {
                 this.Hide();
@@ -115,9 +171,10 @@ namespace LibrarySystem.Forms
             };
 
             sidebarPanel.Controls.Add(lblLogo);
-            sidebarPanel.Controls.Add(lblWelcome);
-            sidebarPanel.Controls.Add(lblUserName);
-            sidebarPanel.Controls.Add(divider);
+            sidebarPanel.Controls.Add(lblRole);
+            sidebarPanel.Controls.Add(userInfoPanel);
+            sidebarPanel.Controls.Add(divider1);
+            sidebarPanel.Controls.Add(lblMenu);
             sidebarPanel.Controls.Add(btnApplicationsNav);
             sidebarPanel.Controls.Add(btnSpecialtiesNav);
             sidebarPanel.Controls.Add(btnUsersNav);
@@ -126,24 +183,38 @@ namespace LibrarySystem.Forms
             // Панель контента
             contentPanel = new Panel
             {
-                Location = new Point(220, 0),
-                Size = new Size(1280, 900),
-                BackColor = ModernUIHelper.CardBackground
+                Location = new Point(260, 0),
+                Size = new Size(1190, 880),
+                BackColor = Color.White
             };
 
-            // Заголовок страницы
+            // Заголовок
+            headerPanel = new Panel
+            {
+                Size = new Size(1190, 85),
+                Location = new Point(0, 0),
+                BackColor = Color.White
+            };
+            headerPanel.Paint += (s, e) =>
+            {
+                using (var pen = new Pen(Color.FromArgb(225, 225, 225), 1))
+                    e.Graphics.DrawLine(pen, 0, 84, 1190, 84);
+            };
+
             lblPageTitle = new Label
             {
-                Text = "УПРАВЛЕНИЕ ЗАЯВКАМИ НА КНИГИ",
-                Font = new Font("Segoe UI", 20, FontStyle.Bold),
-                ForeColor = ModernUIHelper.TextPrimary,
-                Size = new Size(1240, 60),
-                Location = new Point(40, 30),
+                Text = "УПРАВЛЕНИЕ ЗАЯВКАМИ",
+                Font = new Font("Segoe UI", 24, FontStyle.Bold),
+                ForeColor = Color.Black,
+                Size = new Size(800, 45),
+                Location = new Point(35, 20),
                 BackColor = Color.Transparent
             };
-            contentPanel.Controls.Add(lblPageTitle);
+            headerPanel.Controls.Add(lblPageTitle);
 
-            // Создаем панели для разных разделов
+            contentPanel.Controls.Add(headerPanel);
+
+            // Панели разделов
             CreateApplicationsPanel();
             CreateSpecialtiesPanel();
             CreateUsersPanel();
@@ -152,152 +223,225 @@ namespace LibrarySystem.Forms
             this.Controls.Add(contentPanel);
         }
 
+        private Button CreateNavButton(string text, int y, bool isActive)
+        {
+            var btn = new Button
+            {
+                Text = isActive ? $"> {text}" : $"  {text}",
+                Location = new Point(0, y),
+                Size = new Size(260, 48),
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 11, isActive ? FontStyle.Bold : FontStyle.Regular),
+                ForeColor = isActive ? Color.White : Color.FromArgb(160, 160, 160),
+                BackColor = isActive ? Color.FromArgb(40, 40, 40) : Color.Transparent,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Cursor = Cursors.Hand,
+                Padding = new Padding(20, 0, 0, 0)
+            };
+            btn.FlatAppearance.BorderSize = 0;
+            btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(30, 30, 30);
+            return btn;
+        }
+
+        private void UpdateNavButtons(int activeIndex)
+        {
+            Button[] buttons = { btnApplicationsNav, btnSpecialtiesNav, btnUsersNav };
+            string[] names = { "ЗАЯВКИ", "КАТЕГОРИИ", "ПОЛЬЗОВАТЕЛИ" };
+
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                bool isActive = i == activeIndex;
+                buttons[i].Text = isActive ? $"> {names[i]}" : $"  {names[i]}";
+                buttons[i].Font = new Font("Segoe UI", 11, isActive ? FontStyle.Bold : FontStyle.Regular);
+                buttons[i].ForeColor = isActive ? Color.White : Color.FromArgb(160, 160, 160);
+                buttons[i].BackColor = isActive ? Color.FromArgb(40, 40, 40) : Color.Transparent;
+            }
+        }
+
         private void CreateApplicationsPanel()
         {
             applicationsPanel = new Panel
             {
-                Location = new Point(40, 110),
-                Size = new Size(1220, 750),
-                BackColor = Color.Transparent,
+                Location = new Point(35, 105),
+                Size = new Size(1120, 750),
+                BackColor = Color.White,
                 Visible = true
             };
 
-            // Заголовок панели заявлений
-            Label lblAppsTitle = new Label
+            // Описание
+            Label lblDesc = new Label
             {
-                Text = "ВСЕ ЗАЯВКИ НА КНИГИ",
-                Font = new Font("Segoe UI", 14, FontStyle.Bold),
-                ForeColor = ModernUIHelper.TextSecondary,
-                Location = new Point(0, 10),
-                Size = new Size(1160, 40),
+                Text = "Просмотр и управление заявками на книги",
+                Font = new Font("Segoe UI", 11),
+                ForeColor = Color.FromArgb(110, 110, 110),
+                Size = new Size(600, 25),
+                Location = new Point(0, 0),
                 BackColor = Color.Transparent
             };
 
-            // Контейнер для карточек с прокруткой
+            // Контейнер для карточек
             Panel scrollPanel = new Panel
             {
-                Location = new Point(0, 60),
-                Size = new Size(1200, 500),
-                BackColor = Color.Transparent,
+                Location = new Point(0, 40),
+                Size = new Size(1120, 520),
+                BackColor = Color.FromArgb(248, 248, 248),
                 AutoScroll = true
             };
 
-            // FlowLayoutPanel для автоматического расположения карточек
             appsCardsPanel = new FlowLayoutPanel
             {
                 Location = new Point(0, 0),
-                Size = new Size(1200, 500),
+                Size = new Size(1100, 520),
                 BackColor = Color.Transparent,
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = true,
-                Padding = new Padding(10)
+                Padding = new Padding(8)
             };
 
             scrollPanel.Controls.Add(appsCardsPanel);
 
-            // Панель с кнопками действий — таблица для равномерного расположения
-            var buttonPanel = new TableLayoutPanel
+            // Панель с кнопками
+            Panel buttonPanel = new Panel
             {
-                Location = new Point(0, 570),
-                Size = new Size(1220, 80),
-                BackColor = Color.Transparent,
-                ColumnCount = 5,
-                RowCount = 1
+                Location = new Point(0, 580),
+                Size = new Size(1120, 60),
+                BackColor = Color.Transparent
             };
-            for (int i = 0; i < 5; i++) buttonPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
 
-            Button btnApprove = ModernUIHelper.CreateGradientButton("ОДОБРИТЬ", Point.Empty, new Size(1, 1), ModernUIHelper.SuccessColor, ModernUIHelper.SuccessColor);
+            Button btnApprove = CreateActionButton("ОДОБРИТЬ", 0, Color.FromArgb(30, 30, 30));
             btnApprove.Click += (s, e) => ChangeApplicationStatus("Одобрено");
 
-            Button btnReject = ModernUIHelper.CreateGradientButton("ОТКЛОНИТЬ", Point.Empty, new Size(1, 1), ModernUIHelper.DangerColor, ModernUIHelper.DangerColor);
+            Button btnReject = CreateActionButton("ОТКЛОНИТЬ", 160, Color.FromArgb(60, 60, 60));
             btnReject.Click += (s, e) => ChangeApplicationStatus("Отклонено");
 
-            Button btnDelete = ModernUIHelper.CreateGradientButton("УДАЛИТЬ", Point.Empty, new Size(1, 1), ModernUIHelper.NeutralDark, ModernUIHelper.NeutralDarker);
+            Button btnDelete = CreateActionButton("УДАЛИТЬ", 320, Color.FromArgb(90, 90, 90));
             btnDelete.Click += (s, e) => DeleteApplication();
 
-            Button btnRefresh = ModernUIHelper.CreateGradientButton("ОБНОВИТЬ", Point.Empty, new Size(1, 1), ModernUIHelper.SecondaryAccent, ModernUIHelper.SecondaryAccent);
+            Button btnRefresh = CreateOutlineButton("ОБНОВИТЬ", 480);
             btnRefresh.Click += (s, e) => LoadApplicationsCards();
 
             ComboBox cmbFilter = new ComboBox
             {
-                Dock = DockStyle.Fill,
+                Location = new Point(640, 5),
+                Size = new Size(180, 45),
                 Font = new Font("Segoe UI", 10),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 FlatStyle = FlatStyle.Flat,
-                BackColor = ModernUIHelper.SidebarBackground,
-                ForeColor = ModernUIHelper.TextPrimary
+                BackColor = Color.White,
+                ForeColor = Color.Black
             };
-            cmbFilter.Items.AddRange(new object[] { "Все", "На рассмотрении", "Одобрено", "Отклонено" });
+            cmbFilter.Items.AddRange(new object[] { "Все заявки", "На рассмотрении", "Одобрено", "Отклонено" });
             cmbFilter.SelectedIndex = 0;
             cmbFilter.SelectedIndexChanged += (s, e) => LoadApplicationsCards();
 
-            btnApprove.Dock = DockStyle.Fill; btnReject.Dock = DockStyle.Fill; btnDelete.Dock = DockStyle.Fill; btnRefresh.Dock = DockStyle.Fill; cmbFilter.Dock = DockStyle.Fill;
+            buttonPanel.Controls.Add(btnApprove);
+            buttonPanel.Controls.Add(btnReject);
+            buttonPanel.Controls.Add(btnDelete);
+            buttonPanel.Controls.Add(btnRefresh);
+            buttonPanel.Controls.Add(cmbFilter);
 
-            buttonPanel.Controls.Add(btnApprove, 0, 0);
-            buttonPanel.Controls.Add(btnReject, 1, 0);
-            buttonPanel.Controls.Add(btnDelete, 2, 0);
-            buttonPanel.Controls.Add(btnRefresh, 3, 0);
-            buttonPanel.Controls.Add(cmbFilter, 4, 0);
-
-            applicationsPanel.Controls.Add(lblAppsTitle);
+            applicationsPanel.Controls.Add(lblDesc);
             applicationsPanel.Controls.Add(scrollPanel);
             applicationsPanel.Controls.Add(buttonPanel);
 
             contentPanel.Controls.Add(applicationsPanel);
         }
 
+        private Button CreateActionButton(string text, int x, Color bgColor)
+        {
+            var btn = new Button
+            {
+                Text = text,
+                Location = new Point(x, 5),
+                Size = new Size(150, 50),
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = bgColor,
+                Cursor = Cursors.Hand
+            };
+            btn.FlatAppearance.BorderSize = 0;
+            btn.MouseEnter += (s, e) => btn.BackColor = Color.FromArgb(
+                Math.Min(255, bgColor.R + 20),
+                Math.Min(255, bgColor.G + 20),
+                Math.Min(255, bgColor.B + 20));
+            btn.MouseLeave += (s, e) => btn.BackColor = bgColor;
+            return btn;
+        }
+
+        private Button CreateOutlineButton(string text, int x)
+        {
+            var btn = new Button
+            {
+                Text = text,
+                Location = new Point(x, 5),
+                Size = new Size(140, 50),
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10),
+                ForeColor = Color.Black,
+                BackColor = Color.White,
+                Cursor = Cursors.Hand
+            };
+            btn.FlatAppearance.BorderSize = 2;
+            btn.FlatAppearance.BorderColor = Color.FromArgb(180, 180, 180);
+            return btn;
+        }
+
         private void CreateSpecialtiesPanel()
         {
             specialtiesPanel = new Panel
             {
-                Location = new Point(40, 110),
-                Size = new Size(1220, 750),
-                BackColor = Color.Transparent,
+                Location = new Point(35, 105),
+                Size = new Size(1120, 750),
+                BackColor = Color.White,
                 Visible = false
             };
 
-            // DataGridView для категорий
+            Label lblDesc = new Label
+            {
+                Text = "Управление категориями книг",
+                Font = new Font("Segoe UI", 11),
+                ForeColor = Color.FromArgb(110, 110, 110),
+                Size = new Size(600, 25),
+                Location = new Point(0, 0),
+                BackColor = Color.Transparent
+            };
+
             dgvSpecialties = new DataGridView
             {
-                Location = new Point(0, 70),
-                Size = new Size(1220, 550),
+                Location = new Point(0, 40),
+                Size = new Size(1120, 520),
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
             ModernUIHelper.StyleDataGridView(dgvSpecialties);
 
-            // Панель с кнопками
-            // Панель с кнопками (табличный вид)
-            var buttonPanel = new TableLayoutPanel
+            Panel buttonPanel = new Panel
             {
-                Location = new Point(0, 640),
-                Size = new Size(1220, 80),
-                BackColor = Color.Transparent,
-                ColumnCount = 4,
-                RowCount = 1
+                Location = new Point(0, 580),
+                Size = new Size(1120, 60),
+                BackColor = Color.Transparent
             };
-            for (int i = 0; i < 4; i++) buttonPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
 
-            Button btnAdd = ModernUIHelper.CreateGradientButton("ДОБАВИТЬ", Point.Empty, new Size(1,1), ModernUIHelper.SuccessColor, ModernUIHelper.SuccessColor);
+            Button btnAdd = CreateActionButton("ДОБАВИТЬ", 0, Color.FromArgb(30, 30, 30));
             btnAdd.Click += (s, e) => AddSpecialty();
 
-            Button btnEdit = ModernUIHelper.CreateGradientButton("ИЗМЕНИТЬ", Point.Empty, new Size(1,1), ModernUIHelper.WarningColor, ModernUIHelper.WarningColor);
+            Button btnEdit = CreateActionButton("ИЗМЕНИТЬ", 160, Color.FromArgb(60, 60, 60));
             btnEdit.Click += (s, e) => EditSpecialty();
 
-            Button btnDelete = ModernUIHelper.CreateGradientButton("УДАЛИТЬ", Point.Empty, new Size(1,1), ModernUIHelper.DangerColor, ModernUIHelper.DangerColor);
+            Button btnDelete = CreateActionButton("УДАЛИТЬ", 320, Color.FromArgb(90, 90, 90));
             btnDelete.Click += (s, e) => DeleteSpecialty();
 
-            Button btnRefresh = ModernUIHelper.CreateGradientButton("ОБНОВИТЬ", Point.Empty, new Size(1,1), ModernUIHelper.SecondaryAccent, ModernUIHelper.SecondaryAccent);
+            Button btnRefresh = CreateOutlineButton("ОБНОВИТЬ", 480);
             btnRefresh.Click += (s, e) => LoadSpecialties();
 
-            btnAdd.Dock = DockStyle.Fill; btnEdit.Dock = DockStyle.Fill; btnDelete.Dock = DockStyle.Fill; btnRefresh.Dock = DockStyle.Fill;
+            buttonPanel.Controls.Add(btnAdd);
+            buttonPanel.Controls.Add(btnEdit);
+            buttonPanel.Controls.Add(btnDelete);
+            buttonPanel.Controls.Add(btnRefresh);
 
-            buttonPanel.Controls.Add(btnAdd, 0, 0);
-            buttonPanel.Controls.Add(btnEdit, 1, 0);
-            buttonPanel.Controls.Add(btnDelete, 2, 0);
-            buttonPanel.Controls.Add(btnRefresh, 3, 0);
-
+            specialtiesPanel.Controls.Add(lblDesc);
             specialtiesPanel.Controls.Add(dgvSpecialties);
             specialtiesPanel.Controls.Add(buttonPanel);
 
@@ -308,44 +452,47 @@ namespace LibrarySystem.Forms
         {
             usersPanel = new Panel
             {
-                Location = new Point(40, 110),
-                Size = new Size(1220, 750),
-                BackColor = Color.Transparent,
+                Location = new Point(35, 105),
+                Size = new Size(1120, 750),
+                BackColor = Color.White,
                 Visible = false
             };
 
-            // DataGridView для пользователей
+            Label lblDesc = new Label
+            {
+                Text = "Управление пользователями системы",
+                Font = new Font("Segoe UI", 11),
+                ForeColor = Color.FromArgb(110, 110, 110),
+                Size = new Size(600, 25),
+                Location = new Point(0, 0),
+                BackColor = Color.Transparent
+            };
+
             dgvUsers = new DataGridView
             {
-                Location = new Point(0, 70),
-                Size = new Size(1220, 550),
+                Location = new Point(0, 40),
+                Size = new Size(1120, 520),
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
             ModernUIHelper.StyleDataGridView(dgvUsers);
 
-            // Панель с кнопками
-            var buttonPanel = new TableLayoutPanel
+            Panel buttonPanel = new Panel
             {
-                Location = new Point(0, 640),
-                Size = new Size(1160, 80),
-                BackColor = Color.Transparent,
-                ColumnCount = 2,
-                RowCount = 1
+                Location = new Point(0, 580),
+                Size = new Size(1120, 60),
+                BackColor = Color.Transparent
             };
-            buttonPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            buttonPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
 
-            Button btnDelete = ModernUIHelper.CreateGradientButton("УДАЛИТЬ", Point.Empty, new Size(1,1), ModernUIHelper.DangerColor, ModernUIHelper.DangerColor);
+            Button btnDelete = CreateActionButton("УДАЛИТЬ", 0, Color.FromArgb(60, 60, 60));
             btnDelete.Click += (s, e) => DeleteUser();
 
-            Button btnRefresh = ModernUIHelper.CreateGradientButton("ОБНОВИТЬ", Point.Empty, new Size(1,1), ModernUIHelper.SecondaryAccent, ModernUIHelper.SecondaryAccent);
+            Button btnRefresh = CreateOutlineButton("ОБНОВИТЬ", 160);
             btnRefresh.Click += (s, e) => LoadUsers();
 
-            btnDelete.Dock = DockStyle.Fill; btnRefresh.Dock = DockStyle.Fill;
+            buttonPanel.Controls.Add(btnDelete);
+            buttonPanel.Controls.Add(btnRefresh);
 
-            buttonPanel.Controls.Add(btnDelete, 0, 0);
-            buttonPanel.Controls.Add(btnRefresh, 1, 0);
-
+            usersPanel.Controls.Add(lblDesc);
             usersPanel.Controls.Add(dgvUsers);
             usersPanel.Controls.Add(buttonPanel);
 
@@ -357,17 +504,8 @@ namespace LibrarySystem.Forms
             applicationsPanel.Visible = true;
             specialtiesPanel.Visible = false;
             usersPanel.Visible = false;
-
-            btnApplicationsNav.BackColor = ModernUIHelper.PrimaryAccent;
-            btnApplicationsNav.ForeColor = ModernUIHelper.TextPrimary;
-            btnSpecialtiesNav.BackColor = Color.Transparent;
-            btnSpecialtiesNav.ForeColor = ModernUIHelper.TextSecondary;
-            btnUsersNav.BackColor = Color.Transparent;
-            btnUsersNav.ForeColor = ModernUIHelper.TextSecondary;
-
-            lblPageTitle.Text = "УПРАВЛЕНИЕ ЗАЯВКАМИ НА КНИГИ";
-            
-            // Обновляем карточки при переходе на вкладку
+            UpdateNavButtons(0);
+            lblPageTitle.Text = "УПРАВЛЕНИЕ ЗАЯВКАМИ";
             LoadApplicationsCards();
         }
 
@@ -376,15 +514,8 @@ namespace LibrarySystem.Forms
             applicationsPanel.Visible = false;
             specialtiesPanel.Visible = true;
             usersPanel.Visible = false;
-
-            btnApplicationsNav.BackColor = Color.Transparent;
-            btnApplicationsNav.ForeColor = ModernUIHelper.TextSecondary;
-            btnSpecialtiesNav.BackColor = ModernUIHelper.PrimaryAccent;
-            btnSpecialtiesNav.ForeColor = ModernUIHelper.TextPrimary;
-            btnUsersNav.BackColor = Color.Transparent;
-            btnUsersNav.ForeColor = ModernUIHelper.TextSecondary;
-
-            lblPageTitle.Text = "УПРАВЛЕНИЕ КАТЕГОРИЯМИ КНИГ";
+            UpdateNavButtons(1);
+            lblPageTitle.Text = "КАТЕГОРИИ КНИГ";
         }
 
         private void ShowUsersPanel()
@@ -392,15 +523,8 @@ namespace LibrarySystem.Forms
             applicationsPanel.Visible = false;
             specialtiesPanel.Visible = false;
             usersPanel.Visible = true;
-
-            btnApplicationsNav.BackColor = Color.Transparent;
-            btnApplicationsNav.ForeColor = ModernUIHelper.TextSecondary;
-            btnSpecialtiesNav.BackColor = Color.Transparent;
-            btnSpecialtiesNav.ForeColor = ModernUIHelper.TextSecondary;
-            btnUsersNav.BackColor = ModernUIHelper.PrimaryAccent;
-            btnUsersNav.ForeColor = ModernUIHelper.TextPrimary;
-
-            lblPageTitle.Text = "УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ";
+            UpdateNavButtons(2);
+            lblPageTitle.Text = "ПОЛЬЗОВАТЕЛИ";
         }
 
         private void LoadData()
@@ -410,33 +534,26 @@ namespace LibrarySystem.Forms
                 LoadSpecialties();
                 LoadUsers();
             }
-            catch (Exception)
-            {
-                // Не показываем ошибку пользователю
-                // Можно добавить логирование если нужно
-            }
+            catch (Exception) { }
         }
 
         private void LoadApplicationsCards()
         {
-            // Очищаем старые карточки
             appsCardsPanel.Controls.Clear();
             selectedApplicationCard = null;
 
             try
             {
-                // Получаем все заявления
                 List<BookRequest> bookRequests = DatabaseHelper.GetAllBookRequests();
 
                 if (bookRequests.Count == 0)
                 {
-                    // Сообщение если нет заявлений
                     Label lblNoApps = new Label
                     {
-                        Text = "Заявлений пока нет.",
+                        Text = "Заявок пока нет",
                         Font = new Font("Segoe UI", 12),
-                        ForeColor = ModernUIHelper.TextSecondary,
-                        Size = new Size(1100, 100),
+                        ForeColor = Color.FromArgb(120, 120, 120),
+                        Size = new Size(1000, 80),
                         TextAlign = ContentAlignment.MiddleCenter,
                         BackColor = Color.Transparent
                     };
@@ -444,51 +561,43 @@ namespace LibrarySystem.Forms
                     return;
                 }
 
-                // Создаем карточки для каждого заявления
                 foreach (var app in bookRequests)
                 {
-                    // Создаем локальную копию для использования в лямбда-выражении
                     var currentApp = app;
-                    
+
                     Panel card = ModernUIHelper.CreateApplicationCard(currentApp, (s, e) =>
                     {
-                        var clickedCard = (Panel)s;
-                        
-                        // Снимаем выделение с предыдущей карточки
+                        var clickedCard = s as Panel;
+                        if (clickedCard == null) return;
+
                         if (selectedApplicationCard != null && selectedApplicationCard != clickedCard)
                         {
                             selectedApplicationCard.BackColor = ModernUIHelper.CardBackground;
                             selectedApplicationCard.Refresh();
                         }
 
-                        // Выделяем текущую карточку
                         clickedCard.BackColor = ModernUIHelper.CardHoverBackground;
                         clickedCard.Refresh();
                         selectedApplicationCard = clickedCard;
 
-                        // При клике открываем детали (без двойного клика)
                         ApplicationDetailsForm detailsForm = new ApplicationDetailsForm(currentApp, true);
                         detailsForm.ShowDialog();
-                        
-                        // Обновляем карточки после закрытия формы
+
                         if (detailsForm.DialogResult == DialogResult.OK)
-                        {
                             LoadApplicationsCards();
-                        }
                     });
-                    
+
                     appsCardsPanel.Controls.Add(card);
                 }
             }
             catch (Exception)
             {
-                // Не показываем ошибку пользователю
                 Label lblError = new Label
                 {
-                    Text = "Не удалось загрузить заявления",
+                    Text = "Ошибка загрузки заявок",
                     Font = new Font("Segoe UI", 12),
-                    ForeColor = ModernUIHelper.TextSecondary,
-                    Size = new Size(1100, 100),
+                    ForeColor = Color.FromArgb(120, 120, 120),
+                    Size = new Size(1000, 80),
                     TextAlign = ContentAlignment.MiddleCenter,
                     BackColor = Color.Transparent
                 };
@@ -501,69 +610,32 @@ namespace LibrarySystem.Forms
             try
             {
                 List<BookCategory> specialties = DatabaseHelper.GetAllBookCategories();
-                
-                // Проверяем, что DataGridView инициализирован
+
                 if (dgvSpecialties == null) return;
-                
+
                 dgvSpecialties.DataSource = null;
                 dgvSpecialties.DataSource = specialties;
 
-                // Проверяем наличие столбцов перед доступом к ним
                 if (dgvSpecialties.Columns.Count > 0)
                 {
-                    // Используем проверку индексов для безопасного доступа
                     if (dgvSpecialties.Columns.Contains("Id"))
-                    {
-                        var idColumn = dgvSpecialties.Columns["Id"];
-                        if (idColumn != null)
-                        {
-                            idColumn.HeaderText = "ID";
-                        }
-                    }
-                    
+                        dgvSpecialties.Columns["Id"]!.HeaderText = "ID";
                     if (dgvSpecialties.Columns.Contains("Name"))
-                    {
-                        var nameColumn = dgvSpecialties.Columns["Name"];
-                        if (nameColumn != null)
-                            nameColumn.HeaderText = "Название";
-                    }
-                        
+                        dgvSpecialties.Columns["Name"]!.HeaderText = "Название";
                     if (dgvSpecialties.Columns.Contains("Code"))
-                    {
-                        var codeColumn = dgvSpecialties.Columns["Code"];
-                        if (codeColumn != null)
-                            codeColumn.HeaderText = "Код";
-                    }
-                        
+                        dgvSpecialties.Columns["Code"]!.HeaderText = "Код";
                     if (dgvSpecialties.Columns.Contains("PlacesCount"))
-                    {
-                        var placesColumn = dgvSpecialties.Columns["PlacesCount"];
-                        if (placesColumn != null)
-                            placesColumn.HeaderText = "Мест";
-                    }
-                        
+                        dgvSpecialties.Columns["PlacesCount"]!.HeaderText = "Кол-во";
                     if (dgvSpecialties.Columns.Contains("MinScore"))
-                    {
-                        var scoreColumn = dgvSpecialties.Columns["MinScore"];
-                        if (scoreColumn != null)
-                            scoreColumn.HeaderText = "Мин. балл";
-                    }
-                        
+                        dgvSpecialties.Columns["MinScore"]!.HeaderText = "Мин. балл";
                     if (dgvSpecialties.Columns.Contains("Description"))
-                    {
-                        var descColumn = dgvSpecialties.Columns["Description"];
-                        if (descColumn != null)
-                            descColumn.HeaderText = "Описание";
-                    }
+                        dgvSpecialties.Columns["Description"]!.HeaderText = "Описание";
                 }
             }
             catch (Exception)
             {
-                // Не показываем ошибку пользователю
                 if (dgvSpecialties != null)
-                {
                     dgvSpecialties.DataSource = null;
-                }
             }
         }
 
@@ -572,62 +644,40 @@ namespace LibrarySystem.Forms
             try
             {
                 List<User> users = DatabaseHelper.GetAllUsers();
-                
-                // Проверяем, что DataGridView инициализирован
+
                 if (dgvUsers == null) return;
-                
+
                 dgvUsers.DataSource = null;
                 dgvUsers.DataSource = users;
 
-                // Проверяем наличие столбцов перед доступом к ним
                 if (dgvUsers.Columns.Count > 0)
                 {
-                    // Используем проверку индексов для безопасного доступа
                     if (dgvUsers.Columns.Contains("Id"))
-                    {
-                        var idColumn = dgvUsers.Columns["Id"];
-                        if (idColumn != null)
-                        {
-                            idColumn.HeaderText = "ID";
-                        }
-                    }
-                    
+                        dgvUsers.Columns["Id"]!.HeaderText = "ID";
                     if (dgvUsers.Columns.Contains("Login"))
-                    {
-                        var loginColumn = dgvUsers.Columns["Login"];
-                        if (loginColumn != null)
-                            loginColumn.HeaderText = "Логин";
-                    }
-                        
+                        dgvUsers.Columns["Login"]!.HeaderText = "Логин";
                     if (dgvUsers.Columns.Contains("Password"))
-                    {
-                        var passColumn = dgvUsers.Columns["Password"];
-                        if (passColumn != null)
-                            passColumn.Visible = false;
-                    }
-                        
+                        dgvUsers.Columns["Password"]!.Visible = false;
                     if (dgvUsers.Columns.Contains("FullName"))
-                    {
-                        var nameColumn = dgvUsers.Columns["FullName"];
-                        if (nameColumn != null)
-                            nameColumn.HeaderText = "ФИО";
-                    }
-                        
+                        dgvUsers.Columns["FullName"]!.HeaderText = "ФИО";
+                    if (dgvUsers.Columns.Contains("StudentNumber"))
+                        dgvUsers.Columns["StudentNumber"]!.HeaderText = "Студ. билет";
+                    if (dgvUsers.Columns.Contains("Address"))
+                        dgvUsers.Columns["Address"]!.HeaderText = "Адрес";
+                    if (dgvUsers.Columns.Contains("PhoneNumber"))
+                        dgvUsers.Columns["PhoneNumber"]!.HeaderText = "Телефон";
+                    if (dgvUsers.Columns.Contains("Email"))
+                        dgvUsers.Columns["Email"]!.HeaderText = "Email";
                     if (dgvUsers.Columns.Contains("Role"))
-                    {
-                        var roleColumn = dgvUsers.Columns["Role"];
-                        if (roleColumn != null)
-                            roleColumn.HeaderText = "Роль";
-                    }
+                        dgvUsers.Columns["Role"]!.HeaderText = "Роль";
+                    if (dgvUsers.Columns.Contains("RegistrationDate"))
+                        dgvUsers.Columns["RegistrationDate"]!.Visible = false;
                 }
             }
             catch (Exception)
             {
-                // Не показываем ошибку пользователю
                 if (dgvUsers != null)
-                {
                     dgvUsers.DataSource = null;
-                }
             }
         }
 
@@ -635,26 +685,26 @@ namespace LibrarySystem.Forms
         {
             if (selectedApplicationCard == null)
             {
-                MessageBox.Show("Выберите заявление (кликните на карточку)!", "Предупреждение",
+                MessageBox.Show("Выберите заявку!", "Внимание",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             var application = (BookRequest)selectedApplicationCard.Tag;
 
-            if (MessageBox.Show($"Изменить статус заявления на '{status}'?", "Подтверждение",
+            if (MessageBox.Show($"Изменить статус на «{status}»?", "Подтверждение",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 try
                 {
                     DatabaseHelper.UpdateBookRequestStatus(application.Id, status);
                     LoadApplicationsCards();
-                    MessageBox.Show("Статус успешно изменен!", "Успех",
+                    MessageBox.Show("Статус изменен!", "Готово",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Не удалось изменить статус заявления", "Ошибка",
+                    MessageBox.Show("Ошибка изменения статуса", "Ошибка",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -664,26 +714,26 @@ namespace LibrarySystem.Forms
         {
             if (selectedApplicationCard == null)
             {
-                MessageBox.Show("Выберите заявление для удаления (кликните на карточку)!", "Предупреждение",
+                MessageBox.Show("Выберите заявку!", "Внимание",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             var application = (BookRequest)selectedApplicationCard.Tag;
 
-            if (MessageBox.Show("Удалить выбранное заявление?", "Подтверждение",
+            if (MessageBox.Show("Удалить заявку?", "Подтверждение",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 try
                 {
                     DatabaseHelper.DeleteBookRequest(application.Id);
                     LoadApplicationsCards();
-                    MessageBox.Show("Заявление успешно удалено!", "Успех",
+                    MessageBox.Show("Заявка удалена!", "Готово",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("Не удалось удалить заявление", "Ошибка",
+                    MessageBox.Show("Ошибка удаления", "Ошибка",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -695,13 +745,11 @@ namespace LibrarySystem.Forms
             {
                 SpecialtyEditForm form = new SpecialtyEditForm();
                 if (form.ShowDialog() == DialogResult.OK)
-                {
                     LoadSpecialties();
-                }
             }
             catch (Exception)
             {
-                MessageBox.Show("Не удалось открыть форму добавления категории", "Ошибка",
+                MessageBox.Show("Ошибка открытия формы", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -710,7 +758,7 @@ namespace LibrarySystem.Forms
         {
             if (dgvSpecialties.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Выберите категорию для редактирования!", "Предупреждение",
+                MessageBox.Show("Выберите категорию!", "Внимание",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -720,13 +768,11 @@ namespace LibrarySystem.Forms
                 var specialty = (BookCategory)dgvSpecialties.SelectedRows[0].DataBoundItem;
                 SpecialtyEditForm form = new SpecialtyEditForm(specialty);
                 if (form.ShowDialog() == DialogResult.OK)
-                {
                     LoadSpecialties();
-                }
             }
             catch (Exception)
             {
-                MessageBox.Show("Не удалось открыть форму редактирования категории", "Ошибка",
+                MessageBox.Show("Ошибка редактирования", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -735,7 +781,7 @@ namespace LibrarySystem.Forms
         {
             if (dgvSpecialties.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Выберите категорию для удаления!", "Предупреждение",
+                MessageBox.Show("Выберите категорию!", "Внимание",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -744,18 +790,18 @@ namespace LibrarySystem.Forms
             {
                 var specialty = (BookCategory)dgvSpecialties.SelectedRows[0].DataBoundItem;
 
-                if (MessageBox.Show($"Удалить категорию '{specialty.Name}'?", "Подтверждение",
+                if (MessageBox.Show($"Удалить «{specialty.Name}»?", "Подтверждение",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     DatabaseHelper.DeleteBookCategory(specialty.Id);
                     LoadSpecialties();
-                    MessageBox.Show("Книга успешно удалена!", "Успех",
+                    MessageBox.Show("Категория удалена!", "Готово",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception)
             {
-                MessageBox.Show("Не удалось удалить категорию", "Ошибка",
+                MessageBox.Show("Ошибка удаления", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -764,7 +810,7 @@ namespace LibrarySystem.Forms
         {
             if (dgvUsers.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Выберите пользователя для удаления!", "Предупреждение",
+                MessageBox.Show("Выберите пользователя!", "Внимание",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -775,23 +821,23 @@ namespace LibrarySystem.Forms
 
                 if (user.Role == "Admin")
                 {
-                    MessageBox.Show("Невозможно удалить администратора!", "Ошибка",
+                    MessageBox.Show("Нельзя удалить администратора!", "Ошибка",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                if (MessageBox.Show($"Удалить пользователя '{user.FullName}'?", "Подтверждение",
+                if (MessageBox.Show($"Удалить «{user.FullName}»?", "Подтверждение",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     DatabaseHelper.DeleteUser(user.Id);
                     LoadUsers();
-                    MessageBox.Show("Пользователь успешно удален!", "Успех",
+                    MessageBox.Show("Пользователь удален!", "Готово",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception)
             {
-                MessageBox.Show("Не удалось удалить пользователя", "Ошибка",
+                MessageBox.Show("Ошибка удаления", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
