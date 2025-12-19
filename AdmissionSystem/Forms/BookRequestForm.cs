@@ -39,143 +39,168 @@ namespace LibrarySystem.Forms
 
         private void InitializeComponent()
         {
-            this.Size = new Size(540, 420);
-            this.Text = "Заявка на книгу";
+            this.Size = new Size(500, 450);
+            this.Text = "КНИЖНЫЙ ФОНД — Заявка на книгу";
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.BackColor = ModernUIHelper.CardBackground;
+            this.BackColor = Color.White;
 
-            int yPosition = 20;
+            int yPos = 25;
 
             // Заголовок
             Label lblTitle = new Label
             {
-                Text = "ЗАЯВКА НА КНИГУ",
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                ForeColor = ModernUIHelper.PrimaryAccent,
-                Size = new Size(490, 40),
-                Location = new Point(25, yPosition),
-                TextAlign = ContentAlignment.MiddleCenter,
+                Text = "НОВАЯ ЗАЯВКА",
+                Font = new Font("Segoe UI", 20, FontStyle.Bold),
+                ForeColor = Color.Black,
+                Size = new Size(450, 40),
+                Location = new Point(25, yPos),
                 BackColor = Color.Transparent
             };
-            yPosition += 50;
+            yPos += 50;
 
-            // Книга
+            // Разделитель
+            Panel divider = new Panel
+            {
+                Size = new Size(450, 1),
+                Location = new Point(25, yPos),
+                BackColor = Color.FromArgb(220, 220, 220)
+            };
+            yPos += 20;
+
+            // Категория
             Label lblCategory = new Label
             {
-                Text = "Книга:",
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition),
-                Size = new Size(100, 25),
-                ForeColor = ModernUIHelper.TextSecondary,
+                Text = "КАТЕГОРИЯ",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                ForeColor = Color.FromArgb(80, 80, 80),
+                Location = new Point(25, yPos),
+                Size = new Size(450, 20),
                 BackColor = Color.Transparent
             };
+            yPos += 22;
+
             cmbCategory = new ComboBox
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(130, yPosition),
-                Size = new Size(360, 25),
+                Font = new Font("Segoe UI", 11),
+                Location = new Point(25, yPos),
+                Size = new Size(450, 35),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 FlatStyle = FlatStyle.Flat,
-                BackColor = ModernUIHelper.SidebarBackground,
-                ForeColor = ModernUIHelper.TextPrimary
+                BackColor = Color.FromArgb(248, 248, 248),
+                ForeColor = Color.Black
             };
-            // Загрузка категорий
             var categories = DatabaseHelper.GetAllBookCategories();
             cmbCategory.DataSource = categories;
             cmbCategory.DisplayMember = "Name";
             cmbCategory.ValueMember = "Id";
-            yPosition += 40;
+            yPos += 45;
 
             // Название книги
             Label lblBookTitle = new Label
             {
-                Text = "Название книги:",
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition),
-                Size = new Size(120, 25),
-                ForeColor = ModernUIHelper.TextSecondary,
+                Text = "НАЗВАНИЕ КНИГИ",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                ForeColor = Color.FromArgb(80, 80, 80),
+                Location = new Point(25, yPos),
+                Size = new Size(450, 20),
                 BackColor = Color.Transparent
             };
+            yPos += 22;
+
             txtBookTitle = new TextBox
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition + 25),
-                Size = new Size(485, 30),
+                Font = new Font("Segoe UI", 11),
+                Location = new Point(25, yPos),
+                Size = new Size(450, 35),
                 BorderStyle = BorderStyle.FixedSingle,
-                BackColor = ModernUIHelper.SidebarBackground,
-                ForeColor = ModernUIHelper.TextPrimary
+                BackColor = Color.FromArgb(248, 248, 248),
+                ForeColor = Color.Black
             };
-            yPosition += 70;
+            yPos += 48;
 
             // Автор
             Label lblAuthor = new Label
             {
-                Text = "Автор:",
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition),
-                Size = new Size(100, 25),
-                ForeColor = ModernUIHelper.TextSecondary,
+                Text = "АВТОР",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                ForeColor = Color.FromArgb(80, 80, 80),
+                Location = new Point(25, yPos),
+                Size = new Size(450, 20),
                 BackColor = Color.Transparent
             };
+            yPos += 22;
+
             txtAuthor = new TextBox
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition + 25),
-                Size = new Size(485, 30),
+                Font = new Font("Segoe UI", 11),
+                Location = new Point(25, yPos),
+                Size = new Size(450, 35),
                 BorderStyle = BorderStyle.FixedSingle,
-                BackColor = ModernUIHelper.SidebarBackground,
-                ForeColor = ModernUIHelper.TextPrimary
+                BackColor = Color.FromArgb(248, 248, 248),
+                ForeColor = Color.Black
             };
-            yPosition += 70;
+            yPos += 48;
 
             // ISBN
             Label lblISBN = new Label
             {
-                Text = "ISBN (необязательно):",
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition),
-                Size = new Size(150, 25),
-                ForeColor = ModernUIHelper.TextSecondary,
+                Text = "ISBN (необязательно)",
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                ForeColor = Color.FromArgb(80, 80, 80),
+                Location = new Point(25, yPos),
+                Size = new Size(450, 20),
                 BackColor = Color.Transparent
             };
+            yPos += 22;
+
             txtISBN = new TextBox
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition + 25),
-                Size = new Size(485, 30),
+                Font = new Font("Segoe UI", 11),
+                Location = new Point(25, yPos),
+                Size = new Size(450, 35),
                 BorderStyle = BorderStyle.FixedSingle,
-                BackColor = ModernUIHelper.SidebarBackground,
-                ForeColor = ModernUIHelper.TextPrimary
+                BackColor = Color.FromArgb(248, 248, 248),
+                ForeColor = Color.Black
             };
-            yPosition += 70;
+            yPos += 55;
 
-            // Кнопки — расположим как таблицу (2 колонки)
-            var actionsPanel = new TableLayoutPanel
+            // Кнопки
+            btnSubmit = new Button
             {
-                Location = new Point(25, yPosition),
-                Size = new Size(485, 50),
-                BackColor = Color.Transparent,
-                ColumnCount = 2,
-                RowCount = 1
+                Text = "ПОДАТЬ ЗАЯВКУ",
+                Location = new Point(25, yPos),
+                Size = new Size(220, 48),
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black,
+                Cursor = Cursors.Hand
             };
-            actionsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            actionsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-
-            btnSubmit = ModernUIHelper.CreateGradientButton("ПОДАТЬ ЗАЯВКУ", Point.Empty, new Size(1,1), ModernUIHelper.PrimaryAccent, ModernUIHelper.PrimaryAccent);
+            btnSubmit.FlatAppearance.BorderSize = 0;
             btnSubmit.Click += BtnSubmit_Click;
+            btnSubmit.MouseEnter += (s, e) => btnSubmit.BackColor = Color.FromArgb(40, 40, 40);
+            btnSubmit.MouseLeave += (s, e) => btnSubmit.BackColor = Color.Black;
 
-            btnCancel = ModernUIHelper.CreateGradientButton("ОТМЕНА", Point.Empty, new Size(1,1), ModernUIHelper.SecondaryAccent, ModernUIHelper.SecondaryAccent);
+            btnCancel = new Button
+            {
+                Text = "ОТМЕНА",
+                Location = new Point(255, yPos),
+                Size = new Size(220, 48),
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10),
+                ForeColor = Color.Black,
+                BackColor = Color.White,
+                Cursor = Cursors.Hand
+            };
+            btnCancel.FlatAppearance.BorderSize = 2;
+            btnCancel.FlatAppearance.BorderColor = Color.FromArgb(180, 180, 180);
             btnCancel.Click += (s, e) => this.DialogResult = DialogResult.Cancel;
-
-            btnSubmit.Dock = DockStyle.Fill; btnCancel.Dock = DockStyle.Fill;
-
-            actionsPanel.Controls.Add(btnSubmit, 0, 0);
-            actionsPanel.Controls.Add(btnCancel, 1, 0);
 
             // Добавление контролов
             this.Controls.Add(lblTitle);
+            this.Controls.Add(divider);
             this.Controls.Add(lblCategory);
             this.Controls.Add(cmbCategory);
             this.Controls.Add(lblBookTitle);
@@ -184,29 +209,8 @@ namespace LibrarySystem.Forms
             this.Controls.Add(txtAuthor);
             this.Controls.Add(lblISBN);
             this.Controls.Add(txtISBN);
-            this.Controls.Add(actionsPanel);
-        }
-
-        private Label CreateLabel(string text, int yPosition)
-        {
-            return new Label
-            {
-                Text = text,
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition),
-                Size = new Size(550, 20)
-            };
-        }
-
-        private TextBox CreateTextBox(int yPosition)
-        {
-            return new TextBox
-            {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition),
-                Size = new Size(550, 30),
-                BorderStyle = BorderStyle.FixedSingle
-            };
+            this.Controls.Add(btnSubmit);
+            this.Controls.Add(btnCancel);
         }
 
         private void BtnSubmit_Click(object sender, EventArgs e)
@@ -215,7 +219,7 @@ namespace LibrarySystem.Forms
                 string.IsNullOrWhiteSpace(txtBookTitle.Text) ||
                 string.IsNullOrWhiteSpace(txtAuthor.Text))
             {
-                MessageBox.Show("Пожалуйста, заполните все обязательные поля!", "Ошибка",
+                MessageBox.Show("Заполните все обязательные поля!", "Внимание",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -233,15 +237,15 @@ namespace LibrarySystem.Forms
 
                 DatabaseHelper.AddBookRequest(request);
 
-                MessageBox.Show("Заявка на книгу успешно подана!\nОжидайте рассмотрения администратором.",
-                    "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Заявка подана!\nОжидайте рассмотрения.",
+                    "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при подаче заявки: {ex.Message}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

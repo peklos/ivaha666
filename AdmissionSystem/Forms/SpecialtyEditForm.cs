@@ -19,7 +19,7 @@ namespace LibrarySystem.Forms
 
         public SpecialtyEditForm() : this(null) { }
 
-        public SpecialtyEditForm(BookCategory existingSpecialty)
+        public SpecialtyEditForm(BookCategory? existingSpecialty)
         {
             if (existingSpecialty != null)
             {
@@ -36,103 +36,119 @@ namespace LibrarySystem.Forms
 
         private void InitializeComponent()
         {
-            this.Size = new Size(520, 520);
-            this.Text = isEditMode ? "Редактирование категории" : "Добавление категории";
+            this.Size = new Size(480, 520);
+            this.Text = isEditMode ? "КНИЖНЫЙ ФОНД — Редактирование" : "КНИЖНЫЙ ФОНД — Новая категория";
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.BackColor = ModernUIHelper.CardBackground;
+            this.BackColor = Color.White;
 
-            int yPosition = 20;
+            int yPos = 25;
 
             // Заголовок
             Label lblTitle = new Label
             {
-                Text = isEditMode ? "РЕДАКТИРОВАНИЕ КАТЕГОРИИ" : "ДОБАВЛЕНИЕ КАТЕГОРИИ",
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
-                ForeColor = ModernUIHelper.PrimaryAccent,
-                Size = new Size(470, 40),
-                Location = new Point(25, yPosition),
-                TextAlign = ContentAlignment.MiddleCenter,
+                Text = isEditMode ? "РЕДАКТИРОВАНИЕ" : "НОВАЯ КАТЕГОРИЯ",
+                Font = new Font("Segoe UI", 20, FontStyle.Bold),
+                ForeColor = Color.Black,
+                Size = new Size(430, 40),
+                Location = new Point(25, yPos),
                 BackColor = Color.Transparent
             };
-            yPosition += 50;
+            yPos += 50;
+
+            // Разделитель
+            Panel divider = new Panel
+            {
+                Size = new Size(430, 1),
+                Location = new Point(25, yPos),
+                BackColor = Color.FromArgb(220, 220, 220)
+            };
+            yPos += 20;
 
             // Название
-            Label lblName = CreateLabel("Название:", yPosition);
-            lblName.ForeColor = ModernUIHelper.TextSecondary;
-            txtName = CreateTextBox(yPosition + 25);
-            txtName.BackColor = ModernUIHelper.SidebarBackground;
-            txtName.ForeColor = ModernUIHelper.TextPrimary;
+            Label lblName = CreateLabel("НАЗВАНИЕ", yPos);
+            yPos += 22;
+            txtName = CreateTextBox(yPos);
             txtName.Text = isEditMode ? specialty.Name : string.Empty;
-            yPosition += 70;
+            yPos += 50;
 
             // Код
-            Label lblCode = CreateLabel("Код:", yPosition);
-            lblCode.ForeColor = ModernUIHelper.TextSecondary;
-            txtCode = CreateTextBox(yPosition + 25);
-            txtCode.BackColor = ModernUIHelper.SidebarBackground;
-            txtCode.ForeColor = ModernUIHelper.TextPrimary;
+            Label lblCode = CreateLabel("КОД", yPos);
+            yPos += 22;
+            txtCode = CreateTextBox(yPos);
             txtCode.Text = isEditMode ? specialty.Code : string.Empty;
-            yPosition += 70;
+            yPos += 50;
 
             // Количество книг
-            Label lblPlaces = CreateLabel("Количество книг:", yPosition);
-            lblPlaces.ForeColor = ModernUIHelper.TextSecondary;
+            Label lblPlaces = CreateLabel("КОЛИЧЕСТВО КНИГ", yPos);
+            yPos += 22;
             numPlaces = new NumericUpDown
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition + 25),
-                Size = new Size(450, 30),
+                Font = new Font("Segoe UI", 11),
+                Location = new Point(25, yPos),
+                Size = new Size(430, 38),
                 Minimum = 1,
                 Maximum = 10000,
                 Value = isEditMode ? specialty.BooksCount : 100,
-                BackColor = ModernUIHelper.SidebarBackground,
-                ForeColor = ModernUIHelper.TextPrimary
+                BackColor = Color.FromArgb(248, 248, 248),
+                ForeColor = Color.Black,
+                BorderStyle = BorderStyle.FixedSingle
             };
-            yPosition += 70;
+            yPos += 50;
 
             // Описание
-            Label lblDescription = CreateLabel("Описание:", yPosition);
-            lblDescription.ForeColor = ModernUIHelper.TextSecondary;
+            Label lblDescription = CreateLabel("ОПИСАНИЕ", yPos);
+            yPos += 22;
             txtDescription = new TextBox
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition + 25),
-                Size = new Size(450, 100),
+                Font = new Font("Segoe UI", 11),
+                Location = new Point(25, yPos),
+                Size = new Size(430, 90),
                 Multiline = true,
                 ScrollBars = ScrollBars.Vertical,
-                BackColor = ModernUIHelper.SidebarBackground,
-                ForeColor = ModernUIHelper.TextPrimary,
+                BackColor = Color.FromArgb(248, 248, 248),
+                ForeColor = Color.Black,
+                BorderStyle = BorderStyle.FixedSingle,
                 Text = isEditMode ? specialty.Description : string.Empty
             };
-            yPosition += 150;
+            yPos += 110;
 
-            // Кнопки — таблица (2 колонки)
-            var actionsPanel = new TableLayoutPanel
+            // Кнопки
+            Button btnSave = new Button
             {
-                Location = new Point(25, yPosition),
-                Size = new Size(450, 50),
-                BackColor = Color.Transparent,
-                ColumnCount = 2,
-                RowCount = 1
+                Text = "СОХРАНИТЬ",
+                Location = new Point(25, yPos),
+                Size = new Size(210, 48),
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black,
+                Cursor = Cursors.Hand
             };
-            actionsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            actionsPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-
-            Button btnSave = ModernUIHelper.CreateGradientButton("СОХРАНИТЬ", Point.Empty, new Size(1,1), ModernUIHelper.PrimaryAccent, ModernUIHelper.PrimaryAccent);
+            btnSave.FlatAppearance.BorderSize = 0;
             btnSave.Click += BtnSave_Click;
+            btnSave.MouseEnter += (s, e) => btnSave.BackColor = Color.FromArgb(40, 40, 40);
+            btnSave.MouseLeave += (s, e) => btnSave.BackColor = Color.Black;
 
-            Button btnCancel = ModernUIHelper.CreateGradientButton("ОТМЕНА", Point.Empty, new Size(1,1), ModernUIHelper.SecondaryAccent, ModernUIHelper.SecondaryAccent);
+            Button btnCancel = new Button
+            {
+                Text = "ОТМЕНА",
+                Location = new Point(245, yPos),
+                Size = new Size(210, 48),
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10),
+                ForeColor = Color.Black,
+                BackColor = Color.White,
+                Cursor = Cursors.Hand
+            };
+            btnCancel.FlatAppearance.BorderSize = 2;
+            btnCancel.FlatAppearance.BorderColor = Color.FromArgb(180, 180, 180);
             btnCancel.Click += (s, e) => this.DialogResult = DialogResult.Cancel;
-
-            btnSave.Dock = DockStyle.Fill; btnCancel.Dock = DockStyle.Fill;
-
-            actionsPanel.Controls.Add(btnSave, 0, 0);
-            actionsPanel.Controls.Add(btnCancel, 1, 0);
 
             // Добавление контролов
             this.Controls.Add(lblTitle);
+            this.Controls.Add(divider);
             this.Controls.Add(lblName);
             this.Controls.Add(txtName);
             this.Controls.Add(lblCode);
@@ -141,44 +157,48 @@ namespace LibrarySystem.Forms
             this.Controls.Add(numPlaces);
             this.Controls.Add(lblDescription);
             this.Controls.Add(txtDescription);
-            this.Controls.Add(actionsPanel);
+            this.Controls.Add(btnSave);
+            this.Controls.Add(btnCancel);
         }
 
-        private Label CreateLabel(string text, int yPosition)
+        private Label CreateLabel(string text, int yPos)
         {
             return new Label
             {
                 Text = text,
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition),
-                Size = new Size(450, 20)
+                Font = new Font("Segoe UI", 9, FontStyle.Bold),
+                ForeColor = Color.FromArgb(80, 80, 80),
+                Location = new Point(25, yPos),
+                Size = new Size(430, 20),
+                BackColor = Color.Transparent
             };
         }
 
-        private TextBox CreateTextBox(int yPosition)
+        private TextBox CreateTextBox(int yPos)
         {
             return new TextBox
             {
-                Font = new Font("Segoe UI", 10),
-                Location = new Point(25, yPosition),
-                Size = new Size(450, 30),
-                BorderStyle = BorderStyle.FixedSingle
+                Font = new Font("Segoe UI", 11),
+                Location = new Point(25, yPos),
+                Size = new Size(430, 38),
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.FromArgb(248, 248, 248),
+                ForeColor = Color.Black
             };
         }
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            // Валидация
             if (string.IsNullOrWhiteSpace(txtName.Text))
             {
-                MessageBox.Show("Введите название категории!", "Ошибка",
+                MessageBox.Show("Введите название!", "Внимание",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(txtCode.Text))
             {
-                MessageBox.Show("Введите код категории!", "Ошибка",
+                MessageBox.Show("Введите код!", "Внимание",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -199,15 +219,15 @@ namespace LibrarySystem.Forms
                     DatabaseHelper.AddBookCategory(specialty);
                 }
 
-                MessageBox.Show($"Книга успешно {(isEditMode ? "обновлена" : "добавлена")}!",
-                    "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Категория {(isEditMode ? "обновлена" : "добавлена")}!",
+                    "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 this.DialogResult = DialogResult.OK;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при сохранении: {ex.Message}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

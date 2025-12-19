@@ -5,7 +5,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
-    <AssemblyName>LibraryBPPK</AssemblyName>
+    <AssemblyName>BookStock</AssemblyName>
     <RootNamespace>LibrarySystem</RootNamespace>
 
     <!-- Настройки для публикации в один exe -->
@@ -16,10 +16,10 @@
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
 
     <!-- Информация о приложении -->
-    <Product>Библиотека ГБПОУ БППК</Product>
-    <Company>ГБПОУ БППК</Company>
-    <Description>Система управления библиотекой колледжа</Description>
-    <Version>1.0.0</Version>
+    <Product>КНИЖНЫЙ ФОНД</Product>
+    <Company>BookStock Inc.</Company>
+    <Description>Система управления книжным фондом</Description>
+    <Version>2.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
